@@ -1,0 +1,4 @@
+venv
+untracked
+*.pyc
+__pycache__
