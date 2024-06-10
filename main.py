@@ -1,33 +1,54 @@
 import sys
+import time
 
 import numpy as np
 
 
+WIDTH  = 130
+HEIGHT = 28
 
-KERNEL = np.array([[1, 1, 1],
-                   [1, 0, 1],
-                   [1, 1, 1]])
+DELAY = 0.01
 
+COUNT_END = 50
 
 def main(argv):
     rng = np.random.default_rng()
     
-    world = rng.integers(2, size=[20, 20], dtype=np.uint8)
+    world = rng.integers(2, size=[HEIGHT, WIDTH], dtype=np.uint8)
     
-    while True:
-        print(world[:,:])
-        
-        if input() == 'q':
-            break
+    sigma = sum(sum(world))
+    count = 0
     
-        life_step(world)
+    print_board(world, cls=False)
     
+    try:
+        while True:
+            print_board(world)
+            
+            time.sleep(DELAY)
+            
+            
+            if sum(sum(world)) == sigma:
+                count += 1
+            else:
+                sigma = sum(sum(world))
+                
+                count = 0
+            if count == COUNT_END:
+                world = rng.integers(2, size=[HEIGHT, WIDTH], dtype=np.uint8)
+                
+                continue
+            
+            world = life_step(world)
+    except KeyboardInterrupt:
+        cursor_to(HEIGHT + 3, 0)
+
 
 def life_step(A):
-    L = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=1,  axis=0)
-    R = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=-1, axis=0)
-    U = np.roll(np.identity(A.shape[1], dtype=np.uint8), shift=1,  axis=1)
-    D = np.roll(np.identity(A.shape[1], dtype=np.uint8), shift=-1, axis=1)
+    L = np.roll(np.identity(A.shape[1], dtype=np.uint8), shift=1,  axis=1)
+    R = np.roll(np.identity(A.shape[1], dtype=np.uint8), shift=-1, axis=1)
+    U = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=1,  axis=0)
+    D = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=-1, axis=0)
     
     left       =   A@L
     right      =   A@R
@@ -44,11 +65,28 @@ def life_step(A):
     ONE = np.uint8(1)
     ZRO = np.uint8(0)
     
-    with np.nditer(A, op_flags=["readwrite"]) as itrA, \
-         np.nditer(neighbours) as itrN:
-        for a, n in zip(itrA, itrN):
-            a[...] = (ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO)
+    itrA = np.nditer(A)
+    itrN = np.nditer(neighbours)
+    
+    return np.array([ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO \
+                               for a, n in zip(itrA, itrN)]).reshape(A.shape)
 
+
+def print_board(mat, cls=True):
+    if cls:
+        cursor_to(1, 0)
+    
+    print(' +' + len(mat[0])*'=' + '+')
+    for row in mat:
+        print(' |', end='')
+        for c in row:
+            print('#' if c else ' ', end='')
+        print('|')
+    print(' +' + len(mat[0])*'=' + '+')
+
+
+def cursor_to(y, x):
+    print(f"\033[{y};{x}H")
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
