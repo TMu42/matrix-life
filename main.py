@@ -47,7 +47,7 @@ def life_step(A):
     with np.nditer(A, op_flags=["readwrite"]) as itrA, \
          np.nditer(neighbours) as itrN:
         for a, n in zip(itrA, itrN):
-            a += (ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO) - a
+            a[...] = (ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO)
 
 
 if __name__ == "__main__":
