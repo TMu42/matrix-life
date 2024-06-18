@@ -50,17 +50,23 @@ def life_step(A):
     U = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=1,  axis=0)
     D = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=-1, axis=0)
     
-    left       =   A@L
-    right      =   A@R
-    up         = U@A
-    down       = D@A
-    up_left    = U@A@L
-    up_right   = U@A@R
-    down_left  = D@A@L
-    down_right = D@A@R
+    #left       =   A@L
+    #right      =   A@R
+    #up         = U@A
+    #down       = D@A
+    #up_left    = U@A@L
+    #up_right   = U@A@R
+    #down_left  = D@A@L
+    #down_right = D@A@R
     
-    neighbours = left  + up   + up_left  + down_left \
-               + right + down + up_right + down_right
+    #neighbours = left  + up   + up_left  + down_left \
+    #           + right + down + up_right + down_right
+    
+    left_rt = A@(L + R)
+    up_down = (U + D)@A
+    corners = (U + D)@A@(L + R)
+    
+    neighbours = left_rt + up_down + corners
     
     ONE = np.uint8(1)
     ZRO = np.uint8(0)
