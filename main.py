@@ -45,15 +45,24 @@ def main(argv):
 
 
 def life_step(A):
-    L = np.roll(np.identity(A.shape[1], dtype=np.uint8), shift=1,  axis=1)
-    R = np.roll(np.identity(A.shape[1], dtype=np.uint8), shift=-1, axis=1)
-    U = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=1,  axis=0)
-    D = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=-1, axis=0)
+    #L = np.roll(np.identity(A.shape[1], dtype=np.uint8), shift=1,  axis=1)
+    #R = np.roll(np.identity(A.shape[1], dtype=np.uint8), shift=-1, axis=1)
+    #U = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=1,  axis=0)
+    #D = np.roll(np.identity(A.shape[0], dtype=np.uint8), shift=-1, axis=0)
     
-    up_down = (U + D)@A
-    lr_corn = (A + (U + D)@A)@(L + R)
+    #up_down = (U + D)@A
+    #lr_corn = (A + (U + D)@A)@(L + R)
     
-    neighbours = up_down + lr_corn
+    #neighbours = up_down + lr_corn
+    
+    neighbours = np.roll(A, ( 1,  0), (0, 1)) \
+               + np.roll(A, (-1,  0), (0, 1)) \
+               + np.roll(A, ( 0,  1), (0, 1)) \
+               + np.roll(A, ( 0, -1), (0, 1)) \
+               + np.roll(A, ( 1,  1), (0, 1)) \
+               + np.roll(A, ( 1, -1), (0, 1)) \
+               + np.roll(A, (-1,  1), (0, 1)) \
+               + np.roll(A, (-1, -1), (0, 1)) \
     
     ONE = np.uint8(1)
     ZRO = np.uint8(0)
