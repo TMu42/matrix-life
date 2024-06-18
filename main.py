@@ -4,10 +4,13 @@ import time
 import numpy as np
 
 
-WIDTH  = 130
-HEIGHT = 28
+WIDTH  = 1280
+HEIGHT =  720
 
-DELAY = 0.01
+PRINT_WIDTH  = 130
+PRINT_HEIGHT =  28
+
+DELAY = 0.004
 
 COUNT_END = 50
 
@@ -23,14 +26,14 @@ def main(argv):
     sigma = sum(sum(world))
     count = 0
     
-    print_board(world, cls=False)
+    print_board(world[:PRINT_HEIGHT, :PRINT_WIDTH], cls=False)
     
     try:
         while True:
-            print_board(world)
+            print_board(world[:PRINT_HEIGHT, :PRINT_WIDTH])
             
             time.sleep(DELAY)
-            
+            #input()
             
             if sum(sum(world)) == sigma:
                 count += 1
@@ -43,7 +46,8 @@ def main(argv):
                 
                 continue
             
-            world = life_step_matmul(world)
+            #world = life_step_matmul(world)
+            world = life_step_roll(world)
     except KeyboardInterrupt:
         cursor_to(HEIGHT + 3, 0)
 
@@ -59,11 +63,17 @@ def life_step_matmul(A):
     
     neighbours = up_down + lr_corn
     
-    itrA = np.nditer(A)
-    itrN = np.nditer(neighbours)
+    generate = np.minimum(neighbours//3, 1) - np.minimum(neighbours//4, 1)
     
-    return np.array([ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO \
-                               for a, n in zip(itrA, itrN)]).reshape(A.shape)
+    survive = (np.minimum(neighbours//2, 1) - np.minimum(neighbours//4, 1))
+    
+    return np.maximum(generate, A*survive)
+    
+    #itrA = np.nditer(A)
+    #itrN = np.nditer(neighbours)
+    
+    #return np.array([ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO \
+    #                           for a, n in zip(itrA, itrN)]).reshape(A.shape)
 
 
 def life_step_roll(A):
@@ -76,11 +86,21 @@ def life_step_roll(A):
                + np.roll(A, (-1,  1), (0, 1)) \
                + np.roll(A, (-1, -1), (0, 1)) \
     
-    itrA = np.nditer(A)
-    itrN = np.nditer(neighbours)
+    #generate = (2*neighbours)%5%4%3%2
     
-    return np.array([ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO \
-                               for a, n in zip(itrA, itrN)]).reshape(A.shape)
+    #survive = A*(4*neighbours)%7%6%5%4%3%2
+    
+    generate = np.minimum(neighbours//3, 1) - np.minimum(neighbours//4, 1)
+    
+    survive = (np.minimum(neighbours//2, 1) - np.minimum(neighbours//4, 1))
+    
+    return np.maximum(generate, A*survive)
+    
+    #itrA = np.nditer(A)
+    #itrN = np.nditer(neighbours)
+    
+    #return np.array([ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO \
+    #                           for a, n in zip(itrA, itrN)]).reshape(A.shape)
 
 
 def print_board(mat, cls=True):
@@ -88,11 +108,16 @@ def print_board(mat, cls=True):
         cursor_to(1, 0)
     
     print(' +' + len(mat[0])*'=' + '+')
+    
     for row in mat:
         print(' |', end='')
+        
         for c in row:
             print('#' if c else ' ', end='')
+            #print(c, end='')
+        
         print('|')
+    
     print(' +' + len(mat[0])*'=' + '+')
 
 
