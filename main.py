@@ -7,8 +7,8 @@ import time
 import life.scipy.convolve as life  #   8s / 100   @ 1300x280
 
 
-WIDTH  = 1300
-HEIGHT =  280
+WIDTH  = 130
+HEIGHT =  24
 
 PRINT_WIDTH  = 130
 PRINT_HEIGHT =  28
@@ -16,6 +16,11 @@ PRINT_HEIGHT =  28
 DELAY = 0.05
 
 COUNT_END = 50
+    
+sigmas = {5 : 10*[0] + [True],
+          7 : 14*[0] + [True],
+          8 : 16*[0] + [True],
+          9 : 18*[0] + [True]}
 
 
 def main(argv):
@@ -25,16 +30,23 @@ def main(argv):
     
     frame = [0]
     
-    print_board(world, frame, cls=False)
+    print_board(world, frame, count, cls=False)
     
     try:
         while True:
             frame[-1] += 1
             
-            print_board(world, frame)
+            print_board(world, frame, count)
             
             time.sleep(DELAY)
             #input()
+            
+            if update_sigmas(frame[-1], sum(sum(world))):
+                world, count = life.new_world(WIDTH, HEIGHT), 0
+                
+                frame += [0]
+                
+                continue
             
             if sum(sum(world)) == sigma:
                 count += 1
@@ -53,7 +65,25 @@ def main(argv):
         cursor_to(HEIGHT + 4, 0)
 
 
-def print_board(mat, frame=None, cls=True):
+def update_sigmas(frame, total):
+    for key in sigmas:
+        if sigmas[key][-1]:
+            if total != sigmas[key][frame%(2*key)]:
+                sigmas[key][frame%(2*key)] = total
+                
+                sigmas[key][-1] = False
+            elif frame%(2*key) == 2*key - 1:
+                return True
+        else:
+            sigmas[key][frame%(2*key)] = total
+            
+            if frame%(2*key) == 2*key - 1:
+                sigmas[key][-1] = True
+    
+    return False
+
+
+def print_board(mat, frame=None, count=None, cls=True):
     if cls:
         cursor_to(1, 0)
     
@@ -70,13 +100,19 @@ def print_board(mat, frame=None, cls=True):
     
     print(' +' + min(len(mat[0]), PRINT_WIDTH)*'=' + '+')
     
+    for key in sigmas:
+        print(f"{key}: {sigmas[key]}  ")
+    
     if frame is not None:
         f = frame[-10:]
         
         if len(f) < len(frame):
             f = ['...'] + f
         
-        print(f"Frame: {sum(frame)} {f[::-1]}     ", end='')
+        print(f"Frame: {sum(frame)} {f[::-1]}    ", end='')
+    
+    if count is not None:
+        print(f"Count: {count}    ", end='')
 
 
 def cursor_to(y, x):

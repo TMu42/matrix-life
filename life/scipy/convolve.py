@@ -2,9 +2,9 @@ import numpy
 import scipy
 
 
-KERNEL = [[1, 1, 1],
-          [1, 0, 1],
-          [1, 1, 1]]
+KERNEL = [[2, 2, 2],
+          [2, 1, 2],
+          [2, 2, 2]]
 
 rng = numpy.random.default_rng()
 
@@ -18,10 +18,7 @@ def new_world(width, height=None):
 def step(A):
     neighbours = scipy.ndimage.convolve(A, KERNEL, mode="wrap")
     
-    generate = numpy.minimum(neighbours//3, 1) \
-             - numpy.minimum(neighbours//4, 1)
+    new_A = numpy.minimum(neighbours//5, 1) \
+          - numpy.minimum(neighbours//8, 1)
     
-    survive = numpy.minimum(neighbours//2, 1) \
-            - numpy.minimum(neighbours//4, 1)
-    
-    return numpy.maximum(generate, A*survive)
+    return new_A
