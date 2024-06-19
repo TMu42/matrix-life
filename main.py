@@ -1,16 +1,11 @@
 import sys
 import time
 
-import numpy as np
-import scipy as sp
+#import life.numpy.roll as life      #   7s / 100   @ 1300x280
+#import life.numpy.matmul as life    # 200s / 100   @ 1300x280
+#import life.scipy.matmul as life    #  11s / 100   @ 1300x280
+import life.scipy.convolve as life  #   8s / 100   @ 1300x280
 
-import life.numpy.roll as life      # Fastest
-#import life.numpy.matmul as life    # Slowest
-#import life.scipy.matmul as life
-
-#MODE = "NUMPY_MATMUL"  # SLOW!!!!!
-#MODE = "NUMPY_ROLL"
-#MODE = "SCIPY_MATMUL"
 
 WIDTH  = 1300
 HEIGHT =  280
@@ -22,40 +17,11 @@ DELAY = 0.05
 
 COUNT_END = 50
 
-ONE = np.uint8(1)
-ZRO = np.uint8(0)
-
-
-#if MODE == "NUMPY_MATMUL":
-#    L = np.roll(np.identity(WIDTH,  dtype=np.uint8), shift=1,  axis=1)
-#    R = np.roll(np.identity(WIDTH,  dtype=np.uint8), shift=-1, axis=1)
-#    U = np.roll(np.identity(HEIGHT, dtype=np.uint8), shift=1,  axis=0)
-#    D = np.roll(np.identity(HEIGHT, dtype=np.uint8), shift=-1, axis=0)
-#elif MODE == "SCIPY_MATMUL":
-#    #L = sp.sparse.eye_array(WIDTH,  k=1,  dtype=np.uint8)
-#    #R = sp.sparse.eye_array(WIDTH,  k=-1, dtype=np.uint8)
-#    #U = sp.sparse.eye_array(HEIGHT, k=1,  dtype=np.uint8)
-#    #D = sp.sparse.eye_array(HEIGHT, k=-1, dtype=np.uint8)
-#    
-#    L = sp.sparse.diags_array([[1], (WIDTH  - 1)*[1]], offsets=[1-WIDTH,   1])
-#    R = sp.sparse.diags_array([[1], (WIDTH  - 1)*[1]], offsets=[WIDTH-1,  -1])
-#    U = sp.sparse.diags_array([[1], (HEIGHT - 1)*[1]], offsets=[1-HEIGHT,  1])
-#    D = sp.sparse.diags_array([[1], (HEIGHT - 1)*[1]], offsets=[HEIGHT-1, -1])
-
 
 def main(argv):
-    #rng = np.random.default_rng()
-    
-    #world = rng.integers(2, size=[HEIGHT, WIDTH], dtype=np.uint8)
-    
     world = life.new_world(WIDTH, HEIGHT)
     
-    #if MODE == "SCIPY_MATMUL":
-    #    world = [row for row in world]
-    
-    sigma = sum(sum(world))
-    
-    count = 0
+    sigma, count = sum(sum(world)), 0
     
     frame = [0]
     
@@ -73,91 +39,18 @@ def main(argv):
             if sum(sum(world)) == sigma:
                 count += 1
             else:
-                sigma = sum(sum(world))
-                
-                count = 0
+                sigma, count = sum(sum(world)), 0
+            
             if count == COUNT_END:
-                #world = rng.integers(2, size=[HEIGHT, WIDTH], dtype=np.uint8)
-                
-                world = life.new_world(WIDTH, HEIGHT)
+                world, count = life.new_world(WIDTH, HEIGHT), 0
                 
                 frame += [0]
-                
-                count = 0
                 
                 continue
             
             world = life.step(world)
-            
-            #if MODE == "NUMPY_MATMUL":
-            #    world = life_step_np_matmul(world)
-            #elif MODE == "NUMPY_ROLL":
-            #    world = life_step_np_roll(world)
-            #elif MODE == "SCIPY_MATMUL":
-            #    world = life_step_sp_matmul(world)
-            #else:
-            #    break
     except KeyboardInterrupt:
         cursor_to(HEIGHT + 4, 0)
-
-
-#def life_step_np_matmul(A):
-#    up_down = (U + D)@A
-#    lr_corn = (A + (U + D)@A)@(L + R)
-#    
-#    neighbours = up_down + lr_corn
-#    
-#    generate = np.minimum(neighbours//3, 1) - np.minimum(neighbours//4, 1)
-#    
-#    survive = (np.minimum(neighbours//2, 1) - np.minimum(neighbours//4, 1))
-#    
-#    return np.maximum(generate, A*survive)
-#    
-#    #itrA = np.nditer(A)
-#    #itrN = np.nditer(neighbours)
-#    
-#    #return np.array([ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO \
-#    #                           for a, n in zip(itrA, itrN)]).reshape(A.shape)
-
-
-#def life_step_np_roll(A):
-#    neighbours = np.roll(A, ( 1,  0), (0, 1)) \
-#               + np.roll(A, (-1,  0), (0, 1)) \
-#               + np.roll(A, ( 0,  1), (0, 1)) \
-#               + np.roll(A, ( 0, -1), (0, 1)) \
-#               + np.roll(A, ( 1,  1), (0, 1)) \
-#               + np.roll(A, ( 1, -1), (0, 1)) \
-#               + np.roll(A, (-1,  1), (0, 1)) \
-#               + np.roll(A, (-1, -1), (0, 1)) \
-#    
-#    #generate = (2*neighbours)%5%4%3%2
-#    
-#    #survive = A*(4*neighbours)%7%6%5%4%3%2
-#    
-#    generate = np.minimum(neighbours//3, 1) - np.minimum(neighbours//4, 1)
-#    
-#    survive = (np.minimum(neighbours//2, 1) - np.minimum(neighbours//4, 1))
-#    
-#    return np.maximum(generate, A*survive)
-#    
-#    #itrA = np.nditer(A)
-#    #itrN = np.nditer(neighbours)
-#    
-#    #return np.array([ONE if (a == 1 and n > 1 and n < 4) or n == 3 else ZRO \
-#    #                           for a, n in zip(itrA, itrN)]).reshape(A.shape)
-
-
-def life_step_sp_matmul(A):
-    up_down = (U + D)@A
-    lr_corn = (A + (U + D)@A)@(L + R)
-    
-    neighbours = up_down + lr_corn
-    
-    generate = np.minimum(neighbours//3, 1) - np.minimum(neighbours//4, 1)
-    
-    survive = (np.minimum(neighbours//2, 1) - np.minimum(neighbours//4, 1))
-    
-    return np.maximum(generate, A*survive)
 
 
 def print_board(mat, frame=None, cls=True):
