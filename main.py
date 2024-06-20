@@ -6,16 +6,18 @@ import time
 #import life.scipy.matmul as life    #  11s / 100   @ 1300x280
 import life.scipy.convolve as life  #   8s / 100   @ 1300x280
 
+import life.terminal as term
 
-WIDTH  = 130
-HEIGHT =  24
+
+WIDTH  = 1300
+HEIGHT =  280
 
 PRINT_WIDTH  = 130
 PRINT_HEIGHT =  28
 
 DELAY = 0.05
 
-COUNT_END = 50
+#COUNT_END = 50
     
 sigmas = {5 : 10*[0] + [True],
           7 : 14*[0] + [True],
@@ -30,13 +32,15 @@ def main(argv):
     
     frame = [0]
     
-    print_board(world, frame, count, cls=False)
+    term.prepare_terminal()
+    
+    term.print_board(world, frame, count)
     
     try:
         while True:
             frame[-1] += 1
             
-            print_board(world, frame, count)
+            term.print_board(world, frame, count)
             
             time.sleep(DELAY)
             #input()
@@ -53,16 +57,17 @@ def main(argv):
             else:
                 sigma, count = sum(sum(world)), 0
             
-            if count == COUNT_END:
-                world, count = life.new_world(WIDTH, HEIGHT), 0
-                
-                frame += [0]
-                
-                continue
+            #if count == COUNT_END:
+            #    world, count = life.new_world(WIDTH, HEIGHT), 0
+            #    
+            #    frame += [0]
+            #    
+            #    continue
             
             world = life.step(world)
     except KeyboardInterrupt:
-        cursor_to(HEIGHT + 4, 0)
+        #cursor_to(HEIGHT + 4, 0)
+        term.end_terminal(world, frame, count, sigmas)
 
 
 def update_sigmas(frame, total):
@@ -83,36 +88,36 @@ def update_sigmas(frame, total):
     return False
 
 
-def print_board(mat, frame=None, count=None, cls=True):
-    if cls:
-        cursor_to(1, 0)
-    
-    print(' +' + min(len(mat[0]), PRINT_WIDTH)*'=' + '+')
-    
-    for row in mat[:PRINT_HEIGHT]:
-        print(' |', end='')
-        
-        for c in row[:PRINT_WIDTH]:
-            print('#' if c else ' ', end='')
-            #print(c, end='')
-        
-        print('|')
-    
-    print(' +' + min(len(mat[0]), PRINT_WIDTH)*'=' + '+')
-    
-    for key in sigmas:
-        print(f"{key}: {sigmas[key]}  ")
-    
-    if frame is not None:
-        f = frame[-10:]
-        
-        if len(f) < len(frame):
-            f = ['...'] + f
-        
-        print(f"Frame: {sum(frame)} {f[::-1]}    ", end='')
-    
-    if count is not None:
-        print(f"Count: {count}    ", end='')
+#def print_board(mat, frame=None, count=None, cls=True):
+#    if cls:
+#        cursor_to(1, 0)
+#    
+#    print(' +' + min(len(mat[0]), PRINT_WIDTH)*'=' + '+')
+#    
+#    for row in mat[:PRINT_HEIGHT]:
+#        print(' |', end='')
+#        
+#        for c in row[:PRINT_WIDTH]:
+#            print('#' if c else ' ', end='')
+#            #print(c, end='')
+#        
+#        print('|')
+#    
+#    print(' +' + min(len(mat[0]), PRINT_WIDTH)*'=' + '+')
+#    
+#    for key in sigmas:
+#        print(f"{key}: {sigmas[key]}  ")
+#    
+#    if frame is not None:
+#        f = frame[-10:]
+#        
+#        if len(f) < len(frame):
+#            f = ['...'] + f
+#        
+#        print(f"Frame: {sum(frame)} {f[::-1]}    ", end='')
+#    
+#    if count is not None:
+#        print(f"Count: {count}    ", end='')
 
 
 def cursor_to(y, x):
