@@ -8,14 +8,7 @@ import life.scipy.convolve as life  #   8s / 100   @ 1300x280
 
 import life.terminal as term
 
-
-WIDTH  = 130
-HEIGHT =  28
-
-PRINT_WIDTH  = 130
-PRINT_HEIGHT =  28
-
-DELAY = 0.05
+import life.arguments as arg
 
 
 sigmas = {5 : 10*[0] + [True],
@@ -25,7 +18,9 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    world = life.new_world(WIDTH, HEIGHT)
+    args = arg.get_args(sys.argv)
+    
+    world = life.new_world(args.width, args.height)
     
     sigma, frame = sum(sum(world)), [0]
     
@@ -39,10 +34,10 @@ def main(argv):
             
             term.print_board(world, frame)#, sigmas=sigmas)
             
-            time.sleep(DELAY)
+            time.sleep(args.delay)
             
             if update_sigmas(frame[-1], sum(sum(world))):
-                world = life.new_world(WIDTH, HEIGHT)
+                world = life.new_world(args.width, args.height)
                 
                 frame += [0]
                 
@@ -54,7 +49,7 @@ def main(argv):
         
         sys.stdout.flush()
         
-        term.end_terminal(world, frame, sigmas=sigmas)
+        term.end_terminal(world, frame)#, sigmas=sigmas)
 
 
 def update_sigmas(frame, total):

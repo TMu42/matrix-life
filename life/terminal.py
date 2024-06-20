@@ -15,12 +15,11 @@ def end_terminal(mat, frame=None, count=None, sigmas=None):
     
     info_lines = _get_info_lines(frame, count, sigmas)
     
-    end = min(terminal_size.lines - (4 + info_lines), len(mat)) \
-                                                        + info_lines + 4
+    end = min(terminal_size.lines, len(mat) + info_lines + 4)
     
     _cursor_to(end, 1)
     
-    _show_cursor()
+    _show_cursor(True)
 
 
 def print_board(mat, frame=None, count=None, sigmas=None, cls=True):
