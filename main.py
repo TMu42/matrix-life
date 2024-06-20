@@ -42,7 +42,7 @@ def main(argv):
             
             term.print_board(world, frame)#, sigmas=sigmas)
             
-            time.sleep(args.delay)
+            _wait(args.delay)
             
             if update_sigmas(frame[-1], sum(sum(world))):
                 world = golife.new_world(args.width, args.height)
@@ -76,6 +76,13 @@ def update_sigmas(frame, total):
                 sigmas[key][-1] = True
     
     return False
+
+
+def _wait(seconds):
+    if seconds < 0:
+        input()
+    else:
+        time.sleep(seconds)
 
 
 if __name__ == "__main__":
