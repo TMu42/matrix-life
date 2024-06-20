@@ -9,8 +9,8 @@ import life.scipy.convolve as life  #   8s / 100   @ 1300x280
 import life.terminal as term
 
 
-WIDTH  = 1300
-HEIGHT =  280
+WIDTH  = 130
+HEIGHT =  28
 
 PRINT_WIDTH  = 130
 PRINT_HEIGHT =  28
@@ -34,13 +34,13 @@ def main(argv):
     
     term.prepare_terminal()
     
-    term.print_board(world, frame, count)
+    term.print_board(world, frame, count, sigmas)
     
     try:
         while True:
             frame[-1] += 1
             
-            term.print_board(world, frame, count)
+            term.print_board(world, frame, count, sigmas)
             
             time.sleep(DELAY)
             #input()
@@ -66,7 +66,10 @@ def main(argv):
             
             world = life.step(world)
     except KeyboardInterrupt:
-        #cursor_to(HEIGHT + 4, 0)
+        print("\b\b  ", end='')
+        
+        sys.stdout.flush()
+        
         term.end_terminal(world, frame, count, sigmas)
 
 
@@ -87,41 +90,6 @@ def update_sigmas(frame, total):
     
     return False
 
-
-#def print_board(mat, frame=None, count=None, cls=True):
-#    if cls:
-#        cursor_to(1, 0)
-#    
-#    print(' +' + min(len(mat[0]), PRINT_WIDTH)*'=' + '+')
-#    
-#    for row in mat[:PRINT_HEIGHT]:
-#        print(' |', end='')
-#        
-#        for c in row[:PRINT_WIDTH]:
-#            print('#' if c else ' ', end='')
-#            #print(c, end='')
-#        
-#        print('|')
-#    
-#    print(' +' + min(len(mat[0]), PRINT_WIDTH)*'=' + '+')
-#    
-#    for key in sigmas:
-#        print(f"{key}: {sigmas[key]}  ")
-#    
-#    if frame is not None:
-#        f = frame[-10:]
-#        
-#        if len(f) < len(frame):
-#            f = ['...'] + f
-#        
-#        print(f"Frame: {sum(frame)} {f[::-1]}    ", end='')
-#    
-#    if count is not None:
-#        print(f"Count: {count}    ", end='')
-
-
-def cursor_to(y, x):
-    print(f"\033[{y};{x}H")
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

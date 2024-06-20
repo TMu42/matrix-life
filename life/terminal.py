@@ -6,6 +6,8 @@ def prepare_terminal():
     terminal_size = shutil.get_terminal_size()
     
     print((terminal_size.lines - 2)*'\n', end='')
+    
+    _show_cursor(False)
 
 
 def end_terminal(mat, frame=None, count=None, sigmas=None):
@@ -17,6 +19,8 @@ def end_terminal(mat, frame=None, count=None, sigmas=None):
                                                         + info_lines + 4
     
     _cursor_to(end, 1)
+    
+    _show_cursor()
 
 
 def print_board(mat, frame=None, count=None, sigmas=None, cls=True):
@@ -59,6 +63,13 @@ def print_board(mat, frame=None, count=None, sigmas=None, cls=True):
         print(f"Count: {count}    ", end='')
     
     sys.stdout.flush()
+
+
+def _show_cursor(show=True):
+    if show:
+        print("\033[?25h", end='')
+    else:
+        print("\033[?25l", end='')
 
 
 def _cursor_to(y, x):
