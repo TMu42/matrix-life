@@ -17,8 +17,7 @@ PRINT_HEIGHT =  28
 
 DELAY = 0.05
 
-#COUNT_END = 50
-    
+
 sigmas = {5 : 10*[0] + [True],
           7 : 14*[0] + [True],
           8 : 16*[0] + [True],
@@ -28,41 +27,26 @@ sigmas = {5 : 10*[0] + [True],
 def main(argv):
     world = life.new_world(WIDTH, HEIGHT)
     
-    sigma, count = sum(sum(world)), 0
-    
-    frame = [0]
+    sigma, frame = sum(sum(world)), [0]
     
     term.prepare_terminal()
     
-    term.print_board(world, frame, count, sigmas)
+    term.print_board(world, frame)#, sigmas=sigmas)
     
     try:
         while True:
             frame[-1] += 1
             
-            term.print_board(world, frame, count, sigmas)
+            term.print_board(world, frame)#, sigmas=sigmas)
             
             time.sleep(DELAY)
-            #input()
             
             if update_sigmas(frame[-1], sum(sum(world))):
-                world, count = life.new_world(WIDTH, HEIGHT), 0
+                world = life.new_world(WIDTH, HEIGHT)
                 
                 frame += [0]
                 
                 continue
-            
-            if sum(sum(world)) == sigma:
-                count += 1
-            else:
-                sigma, count = sum(sum(world)), 0
-            
-            #if count == COUNT_END:
-            #    world, count = life.new_world(WIDTH, HEIGHT), 0
-            #    
-            #    frame += [0]
-            #    
-            #    continue
             
             world = life.step(world)
     except KeyboardInterrupt:
@@ -70,7 +54,7 @@ def main(argv):
         
         sys.stdout.flush()
         
-        term.end_terminal(world, frame, count, sigmas)
+        term.end_terminal(world, frame, sigmas=sigmas)
 
 
 def update_sigmas(frame, total):
