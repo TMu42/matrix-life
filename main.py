@@ -34,13 +34,15 @@ def main(argv):
     
     term.prepare_terminal()
     
-    term.print_board(world, frame)#, sigmas=sigmas)
+    term.print_board(world, **(_get_kwargs(frame, sigmas=sigmas,
+                                           verbosity=args.verbose)))
     
     try:
         while True:
             frame[-1] += 1
             
-            term.print_board(world, frame)#, sigmas=sigmas)
+            term.print_board(world, **(_get_kwargs(frame, sigmas=sigmas,
+                                                   verbosity=args.verbose)))
             
             _wait(args.delay)
             
@@ -57,7 +59,8 @@ def main(argv):
         
         sys.stdout.flush()
         
-        term.end_terminal(world, frame)#, sigmas=sigmas)
+        term.end_terminal(world, **(_get_kwargs(frame, sigmas=sigmas,
+                                                verbosity=args.verbose)))
 
 
 def update_sigmas(frame, total):
@@ -76,6 +79,17 @@ def update_sigmas(frame, total):
                 sigmas[key][-1] = True
     
     return False
+
+
+def _get_kwargs(frame=None, count=None, sigmas=None, verbosity=0):
+    if verbosity < 0:
+        return {}
+    elif verbosity == 0:
+        return {"frame" : frame}
+    elif verbosity == 1:
+        return {"frame" : frame, "count" : count}
+    else:
+        return {"frame" : frame, "count" : count, "sigmas" : sigmas}
 
 
 def _wait(seconds):

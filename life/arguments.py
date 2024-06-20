@@ -12,6 +12,9 @@ def get_args(args):
                                      description="Conway's Game of Life with "
                                                  "NumPy matrices")
     
+    parser.add_argument('-v', "--verbose", action="count", default=0)
+    parser.add_argument('-q', "--quiet",   action="count", default=0)
+    
     parser.add_argument('-W', "--width")
     parser.add_argument('-H', "--height")
     parser.add_argument('-D', "--delay")
@@ -29,6 +32,8 @@ def get_args(args):
                                                   const=3)
     
     args = parser.parse_args(args=args[1:])
+    
+    args.verbose -= args.quiet
     
     if args.width is None:
         args.width = WIDTH
