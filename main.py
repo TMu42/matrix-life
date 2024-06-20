@@ -28,25 +28,21 @@ def main(argv):
     
     golife = ALGORITHMS[args.algorithm]
     
-    world = golife.new_world(args.width, args.height)
-    
-    frame = [0]
+    world, frame = golife.new_world(args.width, args.height), [0]
     
     term.prepare_terminal()
     
     term.print_board(world, **(_get_kwargs(frame, sigmas=sigmas,
                                            verbosity=args.verbose)))
-    
     try:
         while True:
             frame[-1] += 1
             
             term.print_board(world, **(_get_kwargs(frame, sigmas=sigmas,
                                                    verbosity=args.verbose)))
-            
             _wait(args.delay)
             
-            if update_sigmas(frame[-1], sum(sum(world))):
+            if _update_sigmas(frame[-1], sum(sum(world))):
                 world = golife.new_world(args.width, args.height)
                 
                 frame += [0]
@@ -62,8 +58,7 @@ def main(argv):
         term.end_terminal(world, **(_get_kwargs(frame, sigmas=sigmas,
                                                 verbosity=args.verbose)))
 
-
-def update_sigmas(frame, total):
+def _update_sigmas(frame, total):
     for key in sigmas:
         if sigmas[key][-1]:
             if total != sigmas[key][frame%(2*key)]:

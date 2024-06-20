@@ -1,4 +1,5 @@
 import argparse
+import shutil
 
 
 WIDTH  = 130
@@ -40,10 +41,27 @@ def get_args(args):
     else:
         args.width = int(args.width)
     
+    if args.width == 0:
+        terminal_size = shutil.get_terminal_size()
+        
+        args.width = terminal_size.columns - 2
+    
     if args.height is None:
         args.height = HEIGHT
     else:
         args.height = int(args.height)
+    
+    if args.height == 0:
+        terminal_size = shutil.get_terminal_size()
+        
+        if args.verbose < 0:
+            info_lines = 0
+        elif args.verbose < 2:
+            info_lines = 1
+        else:
+            info_lines = 5
+        
+        args.height = terminal_size.lines - (4 + info_lines)
     
     if args.delay is None:
         args.delay = DELAY
