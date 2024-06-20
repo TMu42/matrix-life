@@ -1,14 +1,20 @@
 import sys
 import time
 
-#import life.numpy.roll as life      #   7s / 100   @ 1300x280
-#import life.numpy.matmul as life    # 200s / 100   @ 1300x280
-#import life.scipy.matmul as life    #  11s / 100   @ 1300x280
-import life.scipy.convolve as life  #   8s / 100   @ 1300x280
+import life.numpy.roll      #   7s / 100   @ 1300x280
+import life.numpy.matmul    # 200s / 100   @ 1300x280
+import life.scipy.matmul    #  11s / 100   @ 1300x280
+import life.scipy.convolve  #   8s / 100   @ 1300x280
 
 import life.terminal as term
 
 import life.arguments as arg
+
+
+ALGORITHMS = [life.numpy.roll,
+              life.numpy.matmul,
+              life.scipy.matmul,
+              life.scipy.convolve]
 
 
 sigmas = {5 : 10*[0] + [True],
@@ -18,11 +24,13 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    args = arg.get_args(sys.argv)
+    args = arg.get_args(argv)
     
-    world = life.new_world(args.width, args.height)
+    golife = ALGORITHMS[args.algorithm]
     
-    sigma, frame = sum(sum(world)), [0]
+    world = golife.new_world(args.width, args.height)
+    
+    frame = [0]
     
     term.prepare_terminal()
     
@@ -37,13 +45,13 @@ def main(argv):
             time.sleep(args.delay)
             
             if update_sigmas(frame[-1], sum(sum(world))):
-                world = life.new_world(args.width, args.height)
+                world = golife.new_world(args.width, args.height)
                 
                 frame += [0]
                 
                 continue
             
-            world = life.step(world)
+            world = golife.step(world)
     except KeyboardInterrupt:
         print("\b\b  ", end='')
         

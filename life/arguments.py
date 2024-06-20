@@ -15,6 +15,18 @@ def get_args(args):
     parser.add_argument('-W', "--width")
     parser.add_argument('-H', "--height")
     parser.add_argument('-D', "--delay")
+    parser.add_argument('-R', "--numpy-roll", action="store_const",
+                                              dest="algorithm",
+                                              const=0)
+    parser.add_argument('-M', "--numpy-matmul", action="store_const",
+                                                dest="algorithm",
+                                                const=1)
+    parser.add_argument('-S', "--scipy-matmul", action="store_const",
+                                                dest="algorithm",
+                                                const=2)
+    parser.add_argument('-C', "--scipy-convolve", action="store_const",
+                                                  dest="algorithm",
+                                                  const=3)
     
     args = parser.parse_args(args=args[1:])
     
@@ -32,5 +44,10 @@ def get_args(args):
         args.delay = DELAY
     else:
         args.delay = float(args.delay)
+    
+    if args.algorithm is None:
+        args.algorithm = 0
+    else:
+        args.algorithm = int(args.algorithm)
     
     return args
