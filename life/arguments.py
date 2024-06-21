@@ -17,6 +17,8 @@ def get_args(args):
     
     args = _normalize_algorithm(args)
     
+    args = _normalize_outmode(args)
+    
     return args
 
 
@@ -31,6 +33,7 @@ def _get_raw_args(args):
     parser.add_argument('-W', "--width")
     parser.add_argument('-H', "--height")
     parser.add_argument('-D', "--delay")
+    
     parser.add_argument('-R', "--numpy-roll", action="store_const",
                                               dest="algorithm",
                                               const=0)
@@ -43,6 +46,14 @@ def _get_raw_args(args):
     parser.add_argument('-C', "--scipy-convolve", action="store_const",
                                                   dest="algorithm",
                                                   const=3)
+    
+    parser.add_argument('-T', "--terminal", action="store_const",
+                                            dest="outmode",
+                                            const=0)
+    
+    parser.add_argument('-G', "--graphical", action="store_const",
+                                             dest="outmode",
+                                             const=1)
     
     return parser.parse_args(args=args[1:])
 
@@ -92,6 +103,7 @@ def _normalize_width_height_delay(args):
     
     return args
 
+
 def _normalize_algorithm(args):
     if args.algorithm is None:
         args.algorithm = 0
@@ -99,3 +111,10 @@ def _normalize_algorithm(args):
         args.algorithm = int(args.algorithm)
     
     return args
+
+
+def _normalize_outmode(args):
+    if args.outmode is None:
+        args.outmode = 0
+    else:
+        args.outmode = int(args.outmode)
