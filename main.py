@@ -1,6 +1,14 @@
+import os
 import sys
 import time
-import pygame
+
+with open(os.devnull, 'w') as devnull:
+    sys.stdout = devnull
+    
+    import pygame
+    
+    sys.stdout = sys.__stdout__
+
 
 import life.numpy.roll      #   7s / 100   @ 1300x280
 import life.numpy.matmul    # 200s / 100   @ 1300x280

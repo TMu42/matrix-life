@@ -118,3 +118,5 @@ def _normalize_outmode(args):
         args.outmode = 0
     else:
         args.outmode = int(args.outmode)
+    
+    return args
