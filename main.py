@@ -1,5 +1,6 @@
 import sys
 import time
+import pygame
 
 import life.numpy.roll      #   7s / 100   @ 1300x280
 import life.numpy.matmul    # 200s / 100   @ 1300x280
