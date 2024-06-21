@@ -8,7 +8,9 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
 ## Files
 ### matrix-life/
     
-    main.py             -    Main python script to execute versions of Conway's Game of Life
+    main.py             -    Main python script to execute versions of Conway's Game of Life. Invoke with:
+                             
+                                 python main.py [OPTIONS]
                              
                              Options:
                                  -W, --width=NUMBER
@@ -25,6 +27,7 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
 
                                  -R, --numpy-roll
                                          Select the numpy.roll() implementation of the Game of Life algorithm.
+                                         (Default)
 
                                  -M, --numpy-matmul
                                          Select the numpy.ndarray.__matmul__() implementation of the Game of Life
@@ -37,6 +40,12 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
                                  -C, --scipy-convolve
                                          Select scipy.ndimage.__convolve__() implementation of the Game of Life
                                          algorithm.
+
+                                 -T, --terminal
+                                         Set display output as terminal - STDOUT (Default)
+
+                                 -G, --graphical
+                                         Set display output as graphical - PyGame (Ignored)
     
     requirements.txt    -    Dependency list for this repository, install into virtual environment or globally with:
                              
