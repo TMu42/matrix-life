@@ -10,20 +10,17 @@ with open(os.devnull, 'w') as devnull:
     sys.stdout = sys.__stdout__
 
 
-import life.numpy.roll      #   7s / 100   @ 1300x280
-import life.numpy.matmul    # 200s / 100   @ 1300x280
-import life.scipy.matmul    #  11s / 100   @ 1300x280
-import life.scipy.convolve  #   8s / 100   @ 1300x280
+import life
 
 import life.terminal as term
 
 import life.arguments as arg
 
 
-ALGORITHMS = [life.numpy.roll,
-              life.numpy.matmul,
-              life.scipy.matmul,
-              life.scipy.convolve]
+ALGORITHMS = [life.numpy.roll,      #   7s / 100   @ 1300x280
+              life.numpy.matmul,    # 200s / 100   @ 1300x280
+              life.scipy.matmul,    #  11s / 100   @ 1300x280
+              life.scipy.convolve]  #   8s / 100   @ 1300x280
 
 
 sigmas = {5 : 10*[0] + [True],
@@ -33,22 +30,19 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    args = arg.get_args(argv)
+    world, golife, frame, args = _initialize(argv)
     
-    golife = ALGORITHMS[args.algorithm]
+    kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
     
-    world, frame = golife.new_world(args.width, args.height), [0]
-    
-    term.prepare_terminal()
-    
-    term.print_board(world, **(_get_kwargs(frame, sigmas=sigmas,
-                                           verbosity=args.verbose)))
+    term.print_board(world, **kwargs)#(_get_kwargs(frame, sigmas=sigmas,
+                                     #      verbosity=args.verbose)))
     try:
         while True:
             frame[-1] += 1
             
-            term.print_board(world, **(_get_kwargs(frame, sigmas=sigmas,
-                                                   verbosity=args.verbose)))
+            kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+            
+            term.print_board(world, **kwargs)
             _wait(args.delay)
             
             if _update_sigmas(frame[-1], sum(sum(world))):
@@ -64,8 +58,9 @@ def main(argv):
         
         sys.stdout.flush()
         
-        term.end_terminal(world, **(_get_kwargs(frame, sigmas=sigmas,
-                                                verbosity=args.verbose)))
+        kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+        
+        term.end_terminal(world, **kwargs)
 
 def _update_sigmas(frame, total):
     for key in sigmas:
@@ -83,6 +78,20 @@ def _update_sigmas(frame, total):
                 sigmas[key][-1] = True
     
     return False
+
+
+def _initialize(argv):
+    args = arg.get_args(argv)
+    
+    golife = ALGORITHMS[args.algorithm]
+    
+    world = golife.new_world(args.width, args.height)
+    
+    frame = [0]
+    
+    term.prepare_terminal()
+    
+    return world, golife, frame, args
 
 
 def _get_kwargs(frame=None, count=None, sigmas=None, verbosity=0):

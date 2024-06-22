@@ -8,8 +8,8 @@ HEIGHT =  28
 DELAY = 0.05
 
 
-def get_args(args):
-    args = _get_raw_args(args)
+def get_args(argv):
+    args = _get_raw_args(argv)
     
     args = _normalize_verbose_quiet(args)
     
