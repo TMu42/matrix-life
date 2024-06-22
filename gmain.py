@@ -4,7 +4,8 @@ import time
 
 import life
 
-import life.terminal as term
+#import life.terminal as term
+import life.graphics as graph
 
 import life.arguments as arg
 
@@ -24,17 +25,17 @@ sigmas = {5 : 10*[0] + [True],
 def main(argv):
     world, golife, frame, args = _initialize(argv)
     
-    kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+#    kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
     
-    term.print_board(world, **kwargs)
+#    term.print_board(world, **kwargs)
     
     try:
         while True:
             frame[-1] += 1
             
-            kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+#            kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
             
-            term.print_board(world, **kwargs)
+#            term.print_board(world, **kwargs)
             
             _wait(args.delay)
             
@@ -47,17 +48,21 @@ def main(argv):
             
             world = golife.step(world)
     except KeyboardInterrupt:
-        print("\b\b  ", end='')
+#        print("\b\b  ", end='')
         
-        sys.stdout.flush()
+#        sys.stdout.flush()
         
-        kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+        pass
         
-        term.end_terminal(world, **kwargs)
+#        kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+        
+#        term.end_terminal(world, **kwargs)
 
 
 def _initialize(argv):
     args = arg.get_args(argv)
+    
+    pygame.init()
     
     golife = ALGORITHMS[args.algorithm]
     
@@ -65,7 +70,7 @@ def _initialize(argv):
     
     frame = [0]
     
-    term.prepare_terminal()
+#    term.prepare_terminal()
     
     return world, golife, frame, args
 
