@@ -4,7 +4,6 @@ import time
 
 import life
 
-#import life.terminal as term
 import life.graphics as graph
 
 import life.arguments as arg
@@ -23,19 +22,15 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    world, golife, frame, args = _initialize(argv)
+    world, surface, golife, frame, args = _initialize(argv)
     
-#    kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
-    
-#    term.print_board(world, **kwargs)
+    graph.paint_board(surface, world)
     
     try:
         while True:
             frame[-1] += 1
             
-#            kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
-            
-#            term.print_board(world, **kwargs)
+            graph.paint_board(surface, world)
             
             _wait(args.delay)
             
@@ -48,21 +43,13 @@ def main(argv):
             
             world = golife.step(world)
     except KeyboardInterrupt:
-#        print("\b\b  ", end='')
-        
-#        sys.stdout.flush()
-        
         pass
-        
-#        kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
-        
-#        term.end_terminal(world, **kwargs)
 
 
 def _initialize(argv):
     args = arg.get_args(argv)
     
-    pygame.init()
+    surface = graph.initialize(args)
     
     golife = ALGORITHMS[args.algorithm]
     
@@ -70,9 +57,7 @@ def _initialize(argv):
     
     frame = [0]
     
-#    term.prepare_terminal()
-    
-    return world, golife, frame, args
+    return world, surface, golife, frame, args
 
 
 def _update_sigmas(frame, total):
