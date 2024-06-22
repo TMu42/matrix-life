@@ -7,6 +7,12 @@ HEIGHT =  28
 
 DELAY = 0.05
 
+MAX_RESOLUTION_WIDTH  = 1280
+MAX_RESOLUTION_HEIGHT =  720
+
+MIN_RESOLUTION_WIDTH  = 160
+MIN_RESOLUTION_HEIGHT =  90
+
 
 def get_args(argv):
     args = _get_raw_args(argv)
@@ -18,6 +24,8 @@ def get_args(argv):
     args = _normalize_algorithm(args)
     
     args = _normalize_outmode(args)
+    
+    args = _normalize_resolution(args)
     
     return args
 
@@ -33,6 +41,9 @@ def _get_raw_args(args):
     parser.add_argument('-W', "--width")
     parser.add_argument('-H', "--height")
     parser.add_argument('-D', "--delay")
+    
+    parser.add_argument('-w', "--resolution-width")
+    parser.add_argument('-b', "--resolution-breadth")
     
     parser.add_argument('-R', "--numpy-roll", action="store_const",
                                               dest="algorithm",
@@ -118,5 +129,27 @@ def _normalize_outmode(args):
         args.outmode = 0
     else:
         args.outmode = int(args.outmode)
+    
+    return args
+
+
+def _normalize_resolution(args):
+    if args.outmode == 1:
+        args.resolution_width = int(args.resolution_width)
+        args.resolution_breadth = int(args.resolution_breadth)
+        
+        if args.resolution_width is None:
+            args.resolution_width = args.width
+        
+        if args.resolution_breadth is None:
+            args.resolution_breadth = args.height
+        
+        args.resolution_width = max(MIN_RESOLUTION_WIDTH,
+                                    min(args.resolution_width,
+                                        MAX_RESOLUTION_WIDTH))
+        
+        args.resolution_breadth = max(MIN_RESOLUTION_HEIGHT,
+                                     min(args.resolution_breadth,
+                                         MAX_RESOLUTION_HEIGHT))
     
     return args
