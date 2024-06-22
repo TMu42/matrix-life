@@ -77,6 +77,8 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
     
     arguments.py    -    CLI argument handling with argparse
     
+    graphics.py     -    Graphical output handling with PyGame
+    
     terminal.py     -    Terminal output handling
 
 ### matrix-life/life/numpy/
