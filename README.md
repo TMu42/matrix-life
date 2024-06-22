@@ -25,7 +25,7 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
                                  -w, --resolution-width
                                          In graphical mode, set the resolution width in pixels.
 
-                                 -w, --resolution-breadth
+                                 -b, --resolution-breadth
                                          In graphical mode, set the resolution breadth (height)
                                          in pixels.
 
