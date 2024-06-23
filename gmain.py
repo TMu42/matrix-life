@@ -32,6 +32,8 @@ def main(argv):
             
             graph.paint_board(surface, world)
             
+            graph.events()
+            
             _wait(args.delay)
             
             if _update_sigmas(frame[-1], sum(sum(world))):

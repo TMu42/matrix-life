@@ -29,22 +29,23 @@ def initialize(args):
     
     pygame.display.set_caption("Matrix Life")
     
-    surface = pygame.display.set_mode((args.resolution_width,
-                                       args.resolution_breadth))
+    if args.full_screen:
+        surface = pygame.display.set_mode(flags=pygame.FULLSCREEN)
+    else:
+        surface = pygame.display.set_mode((args.resolution_width,
+                                           args.resolution_breadth),
+                                          pygame.RESIZABLE)
     
     return surface
 
 
 def paint_board(surface, mat):
-    red_pixels   = (ONE_RED   - ZERO_RED  )*numpy.atleast_3d(mat.T) + ZERO_RED
-    green_pixels = (ONE_GREEN - ZERO_GREEN)*numpy.atleast_3d(mat.T) + ZERO_GREEN
-    blue_pixels  = (ONE_BLUE  - ZERO_BLUE )*numpy.atleast_3d(mat.T) + ZERO_BLUE
+    red_pixels = (ONE_RED   - ZERO_RED  )*numpy.atleast_3d(mat.T) + ZERO_RED
+    gre_pixels = (ONE_GREEN - ZERO_GREEN)*numpy.atleast_3d(mat.T) + ZERO_GREEN
+    blu_pixels = (ONE_BLUE  - ZERO_BLUE )*numpy.atleast_3d(mat.T) + ZERO_BLUE
     
-    life_pixels = numpy.append(
-                        red_pixels, numpy.append(green_pixels,
-                                                 blue_pixels, axis=2), axis=2)
-    
-    #print(f"life_pixels.shape: {life_pixels.shape}")
+    life_pixels = numpy.append(red_pixels, numpy.append(gre_pixels,
+                                                 blu_pixels, axis=2), axis=2)
     
     life_surface = pygame.surfarray.make_surface(life_pixels)
     
@@ -52,3 +53,9 @@ def paint_board(surface, mat):
                  (0, 0))
     
     pygame.display.flip()
+
+
+def events():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            raise KeyboardInterrupt
