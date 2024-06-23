@@ -3,13 +3,13 @@ import sys
 import numpy
 
 
-ZERO_RED   = 31
-ZERO_GREEN =  1
-ZERO_BLUE  = 46
+ZERO_R = 31
+ZERO_G =  1
+ZERO_B = 46
 
-ONE_RED   =  29
-ONE_GREEN = 206
-ONE_BLUE  = 166
+ONE_R  =  29
+ONE_G  = 206
+ONE_B  = 166
 
 
 with open(os.devnull, 'w') as devnull:
@@ -29,7 +29,7 @@ def initialize(args):
     
     pygame.display.set_caption("Matrix Life")
     
-    if args.full_screen:
+    if args.fullscreen:
         surface = pygame.display.set_mode(flags=pygame.FULLSCREEN)
     else:
         surface = pygame.display.set_mode((args.resolution_width,
@@ -40,12 +40,11 @@ def initialize(args):
 
 
 def paint_board(surface, mat):
-    red_pixels = (ONE_RED   - ZERO_RED  )*numpy.atleast_3d(mat.T) + ZERO_RED
-    gre_pixels = (ONE_GREEN - ZERO_GREEN)*numpy.atleast_3d(mat.T) + ZERO_GREEN
-    blu_pixels = (ONE_BLUE  - ZERO_BLUE )*numpy.atleast_3d(mat.T) + ZERO_BLUE
+    r_pixels = (ONE_R - ZERO_R)*numpy.atleast_3d(mat.T) + ZERO_R
+    g_pixels = (ONE_G - ZERO_G)*numpy.atleast_3d(mat.T) + ZERO_G
+    b_pixels = (ONE_B - ZERO_B)*numpy.atleast_3d(mat.T) + ZERO_B
     
-    life_pixels = numpy.append(red_pixels, numpy.append(gre_pixels,
-                                                 blu_pixels, axis=2), axis=2)
+    life_pixels = numpy.concatenate((r_pixels, g_pixels, b_pixels), axis=2)
     
     life_surface = pygame.surfarray.make_surface(life_pixels)
     

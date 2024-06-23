@@ -45,7 +45,7 @@ def _get_raw_args(args):
     parser.add_argument('-w', "--resolution-width")
     parser.add_argument('-b', "--resolution-breadth")
     
-    parser.add_argument('-F', "--full-screen", action="store_true")
+    parser.add_argument('-F', "--fullscreen", action="store_true")
     
     parser.add_argument('-R', "--numpy-roll", action="store_const",
                                               dest="algorithm",
@@ -136,7 +136,7 @@ def _normalize_outmode(args):
 
 
 def _normalize_resolution(args):
-    if args.outmode == 1 and not args.full_screen:
+    if args.outmode == 1 and not args.fullscreen:
         if args.resolution_width is None:
             args.resolution_width = args.width
         
