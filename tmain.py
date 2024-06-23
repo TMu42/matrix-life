@@ -4,7 +4,7 @@ import time
 
 import life
 
-import life.graphics as graph
+import life.terminal as term
 
 import life.arguments as arg
 
@@ -22,39 +22,42 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    world, surface, golife, frame, args = _initialize(argv)
+    world, golife, frame, args = _initialize(argv)
     
-    graph.paint_board(surface, world)
+    kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+    
+    term.print_board(world, **kwargs)
     
     try:
-        while graph.running:
+        while True:
             frame[-1] += 1
             
-            graph.paint_board(surface, world)
+            kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
             
-            graph.events()
+            term.print_board(world, **kwargs)
             
-            if not graph.paused:
-                _wait(args.delay)
+            _wait(args.delay)
+            
+            if _update_sigmas(frame[-1], sum(sum(world))):
+                world = golife.new_world(args.width, args.height)
                 
-                if _update_sigmas(frame[-1], sum(sum(world))):
-                    world = golife.new_world(args.width, args.height)
-                    
-                    frame += [0]
-                    
-                    continue
+                frame += [0]
                 
-                world = golife.step(world)
-            else:
-                _wait(0.01)
+                continue
+            
+            world = golife.step(world)
     except KeyboardInterrupt:
-        pass
+        print("\b\b  ", end='')
+        
+        sys.stdout.flush()
+        
+        kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+        
+        term.end_terminal(world, **kwargs)
 
 
 def _initialize(argv):
     args = arg.get_args(argv)
-    
-    surface = graph.initialize(args)
     
     golife = ALGORITHMS[args.algorithm]
     
@@ -62,7 +65,9 @@ def _initialize(argv):
     
     frame = [0]
     
-    return world, surface, golife, frame, args
+    term.prepare_terminal()
+    
+    return world, golife, frame, args
 
 
 def _update_sigmas(frame, total):

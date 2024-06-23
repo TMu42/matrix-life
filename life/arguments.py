@@ -7,6 +7,9 @@ HEIGHT =  28
 
 DELAY = 0.05
 
+OUT_TERM  = 0
+OUT_GRAPH = 1
+
 MAX_RESOLUTION_WIDTH  = 1280
 MAX_RESOLUTION_HEIGHT =  720
 
@@ -62,11 +65,11 @@ def _get_raw_args(args):
     
     parser.add_argument('-T', "--terminal", action="store_const",
                                             dest="outmode",
-                                            const=0)
+                                            const=OUT_TERM)
     
     parser.add_argument('-G', "--graphical", action="store_const",
                                              dest="outmode",
-                                             const=1)
+                                             const=OUT_GRAPH)
     
     return parser.parse_args(args=args[1:])
 

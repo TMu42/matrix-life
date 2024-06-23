@@ -8,6 +8,8 @@ def prepare_terminal():
     print((terminal_size.lines - 2)*'\n', end='')
     
     _show_cursor(False)
+    
+    return None
 
 
 def end_terminal(mat, frame=None, count=None, sigmas=None):

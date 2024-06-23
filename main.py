@@ -5,6 +5,7 @@ import time
 import life
 
 import life.terminal as term
+import life.graphics as graph
 
 import life.arguments as arg
 
@@ -22,38 +23,39 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    world, golife, frame, args = _initialize(argv)
+    world, surface, golife, frame, args = _initialize(argv)
     
-    kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+    #kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
     
-    term.print_board(world, **kwargs)
+    #_out_board(world, args, **kwargs)
     
     try:
-        while True:
-            frame[-1] += 1
-            
+        while _running(args):
             kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
             
-            term.print_board(world, **kwargs)
+            _out_board(surface, world, **kwargs)
             
-            _wait(args.delay)
+            _events(args)
             
-            if _update_sigmas(frame[-1], sum(sum(world))):
-                world = golife.new_world(args.width, args.height)
+            if not _paused(args):
+                _wait(args.delay)
                 
-                frame += [0]
+                if _update_sigmas(frame[-1], sum(sum(world))):
+                    world = golife.new_world(args.width, args.height)
+                    
+                    frame += [0]
+                    
+                    continue
                 
-                continue
-            
-            world = golife.step(world)
+                world = golife.step(world)
+                
+                frame[-1] += 1
+            else:
+                _wait(0.01)
     except KeyboardInterrupt:
-        print("\b\b  ", end='')
-        
-        sys.stdout.flush()
-        
-        kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
-        
-        term.end_terminal(world, **kwargs)
+        pass
+    
+    _quit(args, world, frame, sigmas=sigmas)
 
 
 def _initialize(argv):
@@ -65,9 +67,12 @@ def _initialize(argv):
     
     frame = [0]
     
-    term.prepare_terminal()
+    if args.outmode == arg.OUT_TERM:
+        surface = term.prepare_terminal()
+    elif args.outmode == arg.OUT_GRAPH:
+        surface = graph.initialize(args)
     
-    return world, golife, frame, args
+    return world, surface, golife, frame, args
 
 
 def _update_sigmas(frame, total):
@@ -88,6 +93,32 @@ def _update_sigmas(frame, total):
     return False
 
 
+def _out_board(surface, world, **kwargs):
+    if surface is not None:
+        graph.paint_board(surface, world)
+    else:
+        term.print_board(world, **kwargs)
+
+
+def _events(args):
+    if args.outmode == arg.OUT_GRAPH:
+        graph.events()
+
+
+def _running(args):
+    if args.outmode == arg.OUT_GRAPH:
+        return graph.running
+    else:
+        return True
+
+
+def _paused(args):
+    if args.outmode == arg.OUT_GRAPH:
+        return graph.paused
+    else:
+        return False
+
+
 def _get_kwargs(frame=None, count=None, sigmas=None, verbosity=0):
     if verbosity < 0:
         return {}
@@ -104,6 +135,17 @@ def _wait(seconds):
         input()
     else:
         time.sleep(seconds)
+
+
+def _quit(args, world, frame=None, count=None, sigmas=None):
+    if args.outmode == arg.OUT_TERM:
+        print("\b\b  ", end='')
+        
+        sys.stdout.flush()
+        
+        kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+        
+        term.end_terminal(world, **kwargs)
 
 
 if __name__ == "__main__":

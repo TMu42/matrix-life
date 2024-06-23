@@ -3,9 +3,9 @@ import sys
 import numpy
 
 
-ZERO_R = 31
-ZERO_G =  1
-ZERO_B = 46
+ZERO_R =  31
+ZERO_G =   1
+ZERO_B =  46
 
 ONE_R  =  29
 ONE_G  = 206
@@ -21,6 +21,8 @@ with open(os.devnull, 'w') as devnull:
 
 
 def initialize(args):
+    global running, paused
+    
     pygame.init()
     
     icon = pygame.image.load("icon.ico")
@@ -36,6 +38,10 @@ def initialize(args):
                                            args.resolution_breadth),
                                           pygame.RESIZABLE)
     
+    running = True
+    
+    paused = False
+    
     return surface
 
 
@@ -48,13 +54,21 @@ def paint_board(surface, mat):
     
     life_surface = pygame.surfarray.make_surface(life_pixels)
     
-    surface.blit(pygame.transform.scale(life_surface, surface.get_rect()[2:]),
-                 (0, 0))
+    life_surface = pygame.transform.scale(life_surface, surface.get_rect()[2:])
+    
+    surface.blit(life_surface, (0, 0))
     
     pygame.display.flip()
 
 
 def events():
+    global running, paused
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            raise KeyboardInterrupt
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key in (pygame.K_ESCAPE, pygame.K_q):
+                running = False
+            elif event.key == pygame.K_p:
+                paused = not paused
