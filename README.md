@@ -3,7 +3,7 @@ Conway's Game of Life using Matrices implemented in Python.
 
 ## Summary
 
-This repository implements the classic [Cellular Automaton](https://en.wikipedia.org/wiki/Cellular_automaton) [John Conway](https://en.wikipedia.org/wiki/John_Horton_Conway)'s [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in Python, using NumPy Matrices and various [Linear Algebra](https://en.wikipedia.org/wiki/Linear_algebra) functions from NumPy and SciPy.
+This repository implements the classic [Cellular Automaton](https://en.wikipedia.org/wiki/Cellular_automaton) [John Conway](https://en.wikipedia.org/wiki/John_Horton_Conway)'s [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in Python, using NumPy Matrices and various [Linear Algebra](https://en.wikipedia.org/wiki/Linear_algebra) functions from NumPy and SciPy. Output is either terminal based or graphical with parameters selectable at invocation or during execution.
 
 ## Files
 ### matrix-life/
@@ -28,7 +28,10 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
                                  -b, --resolution-breadth
                                          In graphical mode, set the resolution breadth (height)
                                          in pixels.
-
+                                 
+                                 -F, --fullscreen
+                                         In graphical mode, set display to fullscreen.
+                                 
                                  -D, --delay=NUMBER
                                          Set the delay interval between iterations, 0 for no
                                          delay, negative for user step-by-step mode.
@@ -55,10 +58,17 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
                                  -G, --graphical
                                          Set display output as graphical - PyGame (Ignored)
     
-    gmain.py            -    Graphical version of main python script, temporarily seperate, will
-                             be integrated with main.py eventually. Invoke with:
+    gmain.py            -    Graphical version of main python script, (deprecated, use main.py).
+                             Invoke with:
                              
                                  python gmain.py [OPTIONS]
+                             
+                             Options: see main.py
+    
+    tmain.py            -    Terminal version of main python script, (deprecated, use main.py).
+                             Invoke with:
+                             
+                                 python tmain.py [OPTIONS]
                              
                              Options: see main.py
     
