@@ -25,10 +25,6 @@ sigmas = {5 : 10*[0] + [True],
 def main(argv):
     world, surface, golife, frame, args = _initialize(argv)
     
-    #kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
-    
-    #_out_board(world, args, **kwargs)
-    
     try:
         while _running(args):
             kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)

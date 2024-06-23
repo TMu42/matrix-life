@@ -72,3 +72,5 @@ def events():
                 running = False
             elif event.key == pygame.K_p:
                 paused = not paused
+        elif event.type == pygame.WINDOWMINIMIZED:
+            paused = True
