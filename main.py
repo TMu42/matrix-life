@@ -33,7 +33,7 @@ def main(argv):
             
             _events()
             
-            if not _paused(args):
+            if not _paused():
                 _wait(args.delay)
                 
                 if _update_sigmas(frame[-1], sum(sum(world))):
@@ -50,10 +50,10 @@ def main(argv):
                 _wait(0.01)
     except KeyboardInterrupt:
         pass
-    except Exception:
-        pass
+    except Exception as e:
+        sys.stderr.write(str(e))
     
-    _quit(args, world, frame, sigmas=sigmas)
+    _quit()
 
 
 def _initialize(argv):
@@ -98,7 +98,7 @@ def _paint_board(**kwargs):
         term.paint_board(surface, world)#, **kwargs)
 
 
-def _events(args):
+def _events():
     if args.outmode == arg.OUT_GRAPH:
         graph.events()
     elif args.outmode == arg.OUT_TERM:
@@ -116,9 +116,11 @@ def _running():
         return True
 
 
-def _paused(args):
+def _paused():
     if args.outmode == arg.OUT_GRAPH:
         return graph.paused
+    elif args.outmode == arg.OUT_TERM:
+        return term.paused
     else:
         return False
 
@@ -134,20 +136,23 @@ def _kwargs(verbosity=0):
 
 def _wait(seconds):
     if seconds < 0:
-        input()
+        input()         ### BROKEN!!!!!
     else:
         time.sleep(seconds)
 
 
-def _quit(args, world, frame=None, count=None, sigmas=None):
-    if args.outmode == arg.OUT_TERM:
-        print("\b\b  ", end='')
+def _quit():
+    if args.outmode == arg.OUT_GRAPH:
+        graph.end()
+    elif args.outmode == arg.OUT_TERM:
+        term.end()
+        #print("\b\b  ", end='')
         
-        sys.stdout.flush()
+        #sys.stdout.flush()
         
         #kwargs = _kwargs(args.verbose)
         
-        term.end()#_termianl(world, **kwargs)
+        #term.end_termianl(world, **kwargs)
 
 
 if __name__ == "__main__":

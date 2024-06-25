@@ -34,8 +34,6 @@ def initialize(args):
     
     field = _init_field(args)
     
-    time.sleep(2)
-    
     running = True
     
     paused = False
@@ -90,8 +88,8 @@ def _init_colours():
     return 1
 
 
-def end(stdscr=None):
-    if stdscr is not None:
+def end():
+    if "stdscr" in globals() and stdscr is not None:
         stdscr.keypad(False)
     
     curses.curs_set(restore_cursor)
@@ -101,51 +99,20 @@ def end(stdscr=None):
 
 
 def paint_board(window, mat):
-    window.addstr(10, 10, '$$')
+    width  = min(window.getmaxyx()[1], len(mat[0]))
+    height = min(window.getmaxyx()[0], len(mat))
+    
+    for i in range(height):
+        for j in range(width):
+            s = '█' if mat[i, j] else ' '
+            
+            if j == width - 1:
+                window.insstr(i, j, s, curses.color_pair(colour_pair))
+            else:
+                window.addstr(i, j, s, curses.color_pair(colour_pair))
+            
     
     window.refresh()
-
-
-#def print_board(mat, frame=None, count=None, sigmas=None, cls=True):
-#    terminal_size = shutil.get_terminal_size()
-#    
-#    info_lines = _get_info_lines(frame, count, sigmas)
-#    
-#    print_width  = min(terminal_size.columns - 2, len(mat[0]))
-#    print_height = min(terminal_size.lines - (4 + info_lines), len(mat))
-#    
-#    if cls:
-#        _cursor_to(2, 1)
-#    
-#    print('+' + print_width*'=' + '+')
-#    
-#    for row in mat[:print_height]:
-#        print('|', end='')
-#        
-#        for c in row[:print_width]:
-#            print('#' if c else ' ', end='')
-#            #print(c, end='')
-#        
-#        print('|')
-#    
-#    print('+' + min(len(mat[0]), print_width)*'=' + '+')
-#    
-#    if sigmas is not None:
-#        for key in sigmas:
-#            print(f"{key}: {sigmas[key]}  ")
-#    
-#    if frame is not None:
-#        f = frame[-10:]
-#        
-#        if len(f) < len(frame):
-#            f = ['...'] + f
-#        
-#        print(f"Frame: {sum(frame)} {f[::-1]}    ", end='')
-#    
-#    if count is not None:
-#        print(f"Count: {count}    ", end='')
-#    
-#    sys.stdout.flush()
 
 
 def events():
@@ -153,10 +120,12 @@ def events():
     
     try:
         while True:
-            key = stdscr.getkey()
+            key = stdscr.get_wch()
             
-            if key in ("KEY_ESC", 'q'):
+            if key in ('\x1b', 'q', 'Q'):
                 running = False
+            elif key in ('p', 'P'):
+                paused = not paused
     except curses.error:
         pass
 
