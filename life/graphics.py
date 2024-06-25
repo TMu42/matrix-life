@@ -2,7 +2,7 @@ import numpy
 
 from . import utils
 
-pygame = utils.silent_import("pygame")
+globals().update(utils.silent_import("pygame"))
 
 
 ZERO_R =  31
