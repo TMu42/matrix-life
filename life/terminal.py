@@ -1,5 +1,4 @@
 import sys
-#import shutil
 import curses
 import time
 
@@ -33,6 +32,18 @@ def initialize(args):
     
     stdscr.keypad(True)
     
+    field = _init_field(args)
+    
+    time.sleep(2)
+    
+    running = True
+    
+    paused = False
+    
+    return field
+
+
+def _init_field(args):
     frame = stdscr.subwin(curses.LINES, curses.COLS, 0, 0)
     
     _h, _w = frame.getmaxyx()
@@ -46,11 +57,10 @@ def initialize(args):
     
     frame.insstr(0, 0, border, curses.color_pair(colour_pair))
     
-    stdscr.refresh()
+    #stdscr.refresh()
     frame.refresh()
-    #return stdscr
     
-    time.sleep(10)
+    return frame.subwin(_h, _w, 1, 1)
 
 
 def _init_colours():
@@ -89,81 +99,66 @@ def end(stdscr=None):
     curses.echo()
     curses.endwin()
 
-#def prepare_terminal():
-#    terminal_size = shutil.get_terminal_size()
-#    
-#    print((terminal_size.lines - 2)*'\n', end='')
-#    
-#    _show_cursor(False)
-#    
-#    return None
+
+def paint_board(window, mat):
+    window.addstr(10, 10, '$$')
+    
+    window.refresh()
 
 
-#def end_terminal(mat, frame=None, count=None, sigmas=None):
+#def print_board(mat, frame=None, count=None, sigmas=None, cls=True):
 #    terminal_size = shutil.get_terminal_size()
 #    
 #    info_lines = _get_info_lines(frame, count, sigmas)
 #    
-#    end = min(terminal_size.lines, len(mat) + info_lines + 4)
+#    print_width  = min(terminal_size.columns - 2, len(mat[0]))
+#    print_height = min(terminal_size.lines - (4 + info_lines), len(mat))
 #    
-#    _cursor_to(end, 1)
+#    if cls:
+#        _cursor_to(2, 1)
 #    
-#    _show_cursor(True)
-
-
-def print_board(mat, frame=None, count=None, sigmas=None, cls=True):
-    terminal_size = shutil.get_terminal_size()
-    
-    info_lines = _get_info_lines(frame, count, sigmas)
-    
-    print_width  = min(terminal_size.columns - 2, len(mat[0]))
-    print_height = min(terminal_size.lines - (4 + info_lines), len(mat))
-    
-    if cls:
-        _cursor_to(2, 1)
-    
-    print('+' + print_width*'=' + '+')
-    
-    for row in mat[:print_height]:
-        print('|', end='')
-        
-        for c in row[:print_width]:
-            print('#' if c else ' ', end='')
-            #print(c, end='')
-        
-        print('|')
-    
-    print('+' + min(len(mat[0]), print_width)*'=' + '+')
-    
-    if sigmas is not None:
-        for key in sigmas:
-            print(f"{key}: {sigmas[key]}  ")
-    
-    if frame is not None:
-        f = frame[-10:]
-        
-        if len(f) < len(frame):
-            f = ['...'] + f
-        
-        print(f"Frame: {sum(frame)} {f[::-1]}    ", end='')
-    
-    if count is not None:
-        print(f"Count: {count}    ", end='')
-    
-    sys.stdout.flush()
-
-
-#def _show_cursor(show=True):
-#    if show:
-#        print("\033[?25h", end='')
-#    else:
-#        print("\033[?25l", end='')
-
-
-#def _cursor_to(y, x):
-#    print(f"\033[{y};{x}H", end='')
+#    print('+' + print_width*'=' + '+')
+#    
+#    for row in mat[:print_height]:
+#        print('|', end='')
+#        
+#        for c in row[:print_width]:
+#            print('#' if c else ' ', end='')
+#            #print(c, end='')
+#        
+#        print('|')
+#    
+#    print('+' + min(len(mat[0]), print_width)*'=' + '+')
+#    
+#    if sigmas is not None:
+#        for key in sigmas:
+#            print(f"{key}: {sigmas[key]}  ")
+#    
+#    if frame is not None:
+#        f = frame[-10:]
+#        
+#        if len(f) < len(frame):
+#            f = ['...'] + f
+#        
+#        print(f"Frame: {sum(frame)} {f[::-1]}    ", end='')
+#    
+#    if count is not None:
+#        print(f"Count: {count}    ", end='')
 #    
 #    sys.stdout.flush()
+
+
+def events():
+    global running, paused
+    
+    try:
+        while True:
+            key = stdscr.getkey()
+            
+            if key in ("KEY_ESC", 'q'):
+                running = False
+    except curses.error:
+        pass
 
 
 def _get_info_lines(frame, count, sigmas):

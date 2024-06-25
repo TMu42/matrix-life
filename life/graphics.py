@@ -40,6 +40,10 @@ def initialize(args):
     return surface
 
 
+def end():
+    return
+
+
 def paint_board(surface, mat):
     r_pixels = (ONE_R - ZERO_R)*numpy.atleast_3d(mat.T) + ZERO_R
     g_pixels = (ONE_G - ZERO_G)*numpy.atleast_3d(mat.T) + ZERO_G

@@ -28,12 +28,10 @@ def main(argv):
     try:
         _initialize(argv)
         
-        while _running(args):
-            kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+        while _running():
+            _paint_board(**(_kwargs(args.verbose)))
             
-            _out_board(surface, world, **kwargs)
-            
-            _events(args)
+            _events()
             
             if not _paused(args):
                 _wait(args.delay)
@@ -93,21 +91,27 @@ def _update_sigmas(frame, total):
     return False
 
 
-def _out_board(surface, world, **kwargs):
-    if surface is not None:
+def _paint_board(**kwargs):
+    if args.outmode == arg.OUT_GRAPH:
         graph.paint_board(surface, world)
-    else:
-        term.print_board(world, **kwargs)
+    elif args.outmode == arg.OUT_TERM:
+        term.paint_board(surface, world)#, **kwargs)
 
 
 def _events(args):
     if args.outmode == arg.OUT_GRAPH:
         graph.events()
+    elif args.outmode == arg.OUT_TERM:
+        term.events()
 
 
-def _running(args):
+def _running():
+    global args
+    
     if args.outmode == arg.OUT_GRAPH:
         return graph.running
+    elif args.outmode == arg.OUT_TERM:
+        return term.running
     else:
         return True
 
@@ -119,13 +123,11 @@ def _paused(args):
         return False
 
 
-def _get_kwargs(frame=None, count=None, sigmas=None, verbosity=0):
+def _kwargs(verbosity=0):
     if verbosity < 0:
         return {}
     elif verbosity == 0:
         return {"frame" : frame}
-    elif verbosity == 1:
-        return {"frame" : frame, "count" : count}
     else:
         return {"frame" : frame, "count" : count, "sigmas" : sigmas}
 
@@ -143,7 +145,7 @@ def _quit(args, world, frame=None, count=None, sigmas=None):
         
         sys.stdout.flush()
         
-        kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
+        #kwargs = _kwargs(args.verbose)
         
         term.end()#_termianl(world, **kwargs)
 
