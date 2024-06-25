@@ -23,9 +23,11 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    world, surface, golife, frame, args = _initialize(argv)
+    global world, surface, golife, frame, args
     
     try:
+        _initialize(argv)
+        
         while _running(args):
             kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
             
@@ -50,11 +52,15 @@ def main(argv):
                 _wait(0.01)
     except KeyboardInterrupt:
         pass
+    except Exception:
+        pass
     
     _quit(args, world, frame, sigmas=sigmas)
 
 
 def _initialize(argv):
+    global world, surface, golife, frame, args
+    
     args = arg.get_args(argv)
     
     golife = ALGORITHMS[args.algorithm]
@@ -64,11 +70,9 @@ def _initialize(argv):
     frame = [0]
     
     if args.outmode == arg.OUT_TERM:
-        surface = term.prepare_terminal()
+        surface = term.initialize(args)
     elif args.outmode == arg.OUT_GRAPH:
         surface = graph.initialize(args)
-    
-    return world, surface, golife, frame, args
 
 
 def _update_sigmas(frame, total):
@@ -141,7 +145,7 @@ def _quit(args, world, frame=None, count=None, sigmas=None):
         
         kwargs = _get_kwargs(frame, sigmas=sigmas, verbosity=args.verbose)
         
-        term.end_terminal(world, **kwargs)
+        term.end()#_termianl(world, **kwargs)
 
 
 if __name__ == "__main__":
