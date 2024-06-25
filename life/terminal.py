@@ -1,5 +1,18 @@
 import sys
 import shutil
+import curses
+
+
+ZERO_R  = 121
+ZERO_G  =   4
+ZERO_B  = 180
+
+ONE_R = 113
+ONE_G = 805
+ONE_B = 648
+
+ZERO_DEFAULTS = [55, 17, 0]
+ONE_DEFAULTS  = [49, 14, 6]
 
 
 def prepare_terminal():

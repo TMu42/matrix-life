@@ -1,6 +1,9 @@
-import os
 import sys
 import numpy
+
+from . import utils
+
+pygame = utils.silent_import("pygame")
 
 
 ZERO_R =  31
@@ -11,13 +14,6 @@ ONE_R  =  29
 ONE_G  = 206
 ONE_B  = 166
 
-
-with open(os.devnull, 'w') as devnull:
-    sys.stdout = devnull
-    
-    import pygame
-    
-    sys.stdout = sys.__stdout__
 
 
 def initialize(args):
@@ -74,3 +70,6 @@ def events():
                 paused = not paused
         elif event.type == pygame.WINDOWMINIMIZED:
             paused = True
+
+
+

@@ -9,10 +9,10 @@ import life.graphics as graph
 import life.arguments as arg
 
 
-ALGORITHMS = [life.numpy.roll,      #   7s / 100   @ 1300x280
-              life.numpy.matmul,    # 200s / 100   @ 1300x280
-              life.scipy.matmul,    #  11s / 100   @ 1300x280
-              life.scipy.convolve]  #   8s / 100   @ 1300x280
+ALGORITHMS = [life.nump.roll,      #   7s / 100   @ 1300x280
+              life.nump.matmul,    # 200s / 100   @ 1300x280
+              life.scip.matmul,    #  11s / 100   @ 1300x280
+              life.scip.convolve]  #   8s / 100   @ 1300x280
 
 
 sigmas = {5 : 10*[0] + [True],
