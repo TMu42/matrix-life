@@ -1,4 +1,5 @@
 venv
 untracked
+archive
 *.pyc
 __pycache__
