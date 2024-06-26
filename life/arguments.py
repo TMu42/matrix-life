@@ -139,7 +139,7 @@ def _normalize_outmode(args):
 
 
 def _normalize_resolution(args):
-    if args.outmode == 1 and not args.fullscreen:
+    if not args.fullscreen:
         if args.resolution_width is None:
             args.resolution_width = args.width
         

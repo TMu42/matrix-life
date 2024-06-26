@@ -42,12 +42,15 @@ def initialize(args):
 
 
 def _init_field(args):
-    frame = stdscr.subwin(curses.LINES, curses.COLS, 0, 0)
+    max_y, max_x = stdscr.getmaxyx()
     
-    _h, _w = frame.getmaxyx()
+    max_y -= 2
+    max_x -= 2
     
-    _h -= 2
-    _w -= 2
+    _h = min(max_y, args.resolution_breadth, args.height)
+    _w = min(max_x, args.resolution_width,   args.width)
+    
+    frame = stdscr.subwin(_h + 2, _w + 2, 0, 0)
     
     border = '╔' + _w*'═' + "╗\n"  \
      + (_h)*('║' + _w*' ' + "║\n") \
