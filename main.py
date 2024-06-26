@@ -37,7 +37,7 @@ def main(argv):
                 _wait(args.delay)
                 
                 if _update_sigmas(frame[-1], sum(sum(world))):
-                    world = golife.new_world(args.width, args.height)
+                    world = golife.new_world(*args.size)
                     
                     frame += [0]
                     
@@ -63,7 +63,7 @@ def _initialize(argv):
     
     golife = ALGORITHMS[args.algorithm]
     
-    world = golife.new_world(args.width, args.height)
+    world = golife.new_world(*args.size)
     
     frame = [0]
     

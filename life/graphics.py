@@ -29,9 +29,7 @@ def initialize(args):
     if args.fullscreen:
         surface = pygame.display.set_mode(flags=pygame.FULLSCREEN)
     else:
-        surface = pygame.display.set_mode((args.resolution_width,
-                                           args.resolution_breadth),
-                                          pygame.RESIZABLE)
+        surface = pygame.display.set_mode(args.resolution, pygame.RESIZABLE)
     
     running = True
     

@@ -10,25 +10,30 @@ DELAY = 0.05
 OUT_TERM  = 0
 OUT_GRAPH = 1
 
-MAX_RESOLUTION_WIDTH  = 1280
-MAX_RESOLUTION_HEIGHT =  720
+RES_WIDTH  = 960
+RES_HEIGHT = 540
 
-MIN_RESOLUTION_WIDTH  = 160
-MIN_RESOLUTION_HEIGHT =  90
+#MAX_RESOLUTION_WIDTH  = 1280
+#MAX_RESOLUTION_HEIGHT =  720
+
+#MIN_RESOLUTION_WIDTH  = 160
+#MIN_RESOLUTION_HEIGHT =  90
 
 
 def get_args(argv):
     args = _get_raw_args(argv)
     
-    args = _normalize_verbose_quiet(args)
+    _normalize_verbose_quiet(args)
     
-    args = _normalize_width_height_delay(args)
+    _normalize_size_resolution(args)
+    
+    #args = _normalize_width_height_delay(args)
     
     args = _normalize_algorithm(args)
     
     args = _normalize_outmode(args)
     
-    args = _normalize_resolution(args)
+    #args = _normalize_resolution(args)
     
     return args
 
@@ -41,12 +46,20 @@ def _get_raw_args(args):
     parser.add_argument('-v', "--verbose", action="count", default=0)
     parser.add_argument('-q', "--quiet",   action="count", default=0)
     
-    parser.add_argument('-W', "--width")
-    parser.add_argument('-H', "--height")
-    parser.add_argument('-D', "--delay")
+    parser.add_argument('-d', "--delay", type=float, default=DELAY)
     
-    parser.add_argument('-w', "--resolution-width")
-    parser.add_argument('-b', "--resolution-breadth")
+    parser.add_argument('-r', "--resolution", type=int, nargs='+',
+                                              default=[WIDTH, HEIGHT])
+    parser.add_argument('-s', "--size",       type=int, nargs='+',
+                                              default=[RES_WIDTH, RES_HEIGHT])
+    
+    
+#    parser.add_argument('-W', "--width")
+#    parser.add_argument('-H', "--height")
+#    parser.add_argument('-D', "--delay")
+    
+#    parser.add_argument('-w', "--resolution-width")
+#    parser.add_argument('-b', "--resolution-breadth")
     
     parser.add_argument('-F', "--fullscreen", action="store_true")
     
@@ -81,43 +94,53 @@ def _normalize_verbose_quiet(args):
     
     args.verbose -= quiet
     
-    return args
+    #return args
 
 
-def _normalize_width_height_delay(args):
-    if args.width is None:
-        args.width = WIDTH
+def _normalize_size_resolution(args):
+    if len(args.resolution) == 1:
+        args.resolution = tuple(2*args.resolution)
     else:
-        args.width = int(args.width)
-    
-    if args.height is None:
-        args.height = HEIGHT
+        args.resolution = tuple(args.resolution[:2])
+    if len(args.size) == 1:
+        args.size = tuple(2*args.size)
     else:
-        args.height = int(args.height)
-    
-    if args.delay is None:
-        args.delay = DELAY
-    else:
-        args.delay = float(args.delay)
-    
-    if args.width == 0:
-        terminal_size = shutil.get_terminal_size()
-        
-        args.width = terminal_size.columns - 2
-    
-    if args.height == 0:
-        terminal_size = shutil.get_terminal_size()
-        
-        if args.verbose < 0:
-            info_lines = 0
-        elif args.verbose < 2:
-            info_lines = 1
-        else:
-            info_lines = 5
-        
-        args.height = terminal_size.lines - (4 + info_lines)
-    
-    return args
+        args.size = tuple(args.size[:2])
+
+#def _normalize_width_height_delay(args):
+#    if args.width is None:
+#        args.width = WIDTH
+#    else:
+#        args.width = int(args.width)
+#    
+#    if args.height is None:
+#        args.height = HEIGHT
+#    else:
+#        args.height = int(args.height)
+#    
+#    if args.delay is None:
+#        args.delay = DELAY
+#    else:
+#        args.delay = float(args.delay)
+#    
+#    if args.width == 0:
+#        terminal_size = shutil.get_terminal_size()
+#        
+#        args.width = terminal_size.columns - 2
+#    
+#    if args.height == 0:
+#        terminal_size = shutil.get_terminal_size()
+#        
+#        if args.verbose < 0:
+#            info_lines = 0
+#        elif args.verbose < 2:
+#            info_lines = 1
+#        else:
+#            info_lines = 5
+#        
+#        args.height = terminal_size.lines - (4 + info_lines)
+#    
+#    return args
 
 
 def _normalize_algorithm(args):

@@ -47,8 +47,8 @@ def _init_field(args):
     max_y -= 2
     max_x -= 2
     
-    _h = min(max_y, args.resolution_breadth, args.height)
-    _w = min(max_x, args.resolution_width,   args.width)
+    _h = min(max_y, args.resolution[1], args.size[1])
+    _w = min(max_x, args.resolution[0], args.size[0])
     
     frame = stdscr.subwin(_h + 2, _w + 2, 0, 0)
     
