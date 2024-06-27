@@ -72,19 +72,6 @@ def _get_raw_args(args):
     
     parser.add_argument('-F', "--fullscreen", action="store_true")
     
-    #parser.add_argument('-R', "--numpy-roll", action="store_const",
-    #                                          dest="algorithm",
-    #                                          const=0)
-    #parser.add_argument('-M', "--numpy-matmul", action="store_const",
-    #                                            dest="algorithm",
-    #                                            const=1)
-    #parser.add_argument('-S', "--scipy-matmul", action="store_const",
-    #                                            dest="algorithm",
-    #                                            const=2)
-    #parser.add_argument('-C', "--scipy-convolve", action="store_const",
-    #                                              dest="algorithm",
-    #                                              const=3)
-    
     return parser.parse_args(args=args[1:])
 
 
@@ -110,28 +97,16 @@ def _normalize_size_resolution(args):
 def _normalize_algorithm(args):
     if args.algorithm in DEFAULT:
         args.algorithm = NP_ROLL[0]
-    elif args.algorithm in NP_MATMUL:
-        args.algorithm = NP_MATMUL[0]
-    elif args.algorithm in NP_ROLL:
-        args.algorithm = NP_ROLL[0]
-    elif args.algorithm in SP_MATMUL:
-        args.algorithm = SP_MATMUL[0]
-    elif args.algorithm in SP_CONVOLVE:
-        args.algorithm = SP_CONVOLVE[0]
-#    if args.algorithm is None:
-#        args.algorithm = 0
-#    else:
-#        args.algorithm = int(args.algorithm)
-#    
-#    return args
+#    elif args.algorithm in NP_MATMUL:
+#        args.algorithm = NP_MATMUL[0]
+#    elif args.algorithm in NP_ROLL:
+#        args.algorithm = NP_ROLL[0]
+#    elif args.algorithm in SP_MATMUL:
+#        args.algorithm = SP_MATMUL[0]
+#    elif args.algorithm in SP_CONVOLVE:
+#        args.algorithm = SP_CONVOLVE[0]
 
 
 def _normalize_outmode(args):
     if args.outmode in DEFAULT:
         args.outmode = TERMINAL[0]
-#    if args.outmode is None:
-#        args.outmode = 0
-#    else:
-#        args.outmode = int(args.outmode)
-#    
-#    return args

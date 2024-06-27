@@ -15,10 +15,15 @@ import life.arguments as arg
 #              life.scip.matmul,    #  11s / 100   @ 1300x280
 #              life.scip.convolve]  #   8s / 100   @ 1300x280
 
-ALGORITHMS = {arg.NP_ROLL[0]     : life.nump.roll,
-              arg.NP_MATMUL[0]   : life.nump.matmul,
-              arg.SP_MATMUL[0]   : life.scip.matmul,
-              arg.SP_CONVOLVE[0] : life.scip.convolve}
+#ALGORITHMS = {arg.NP_ROLL[0]     : life.nump.roll,
+#              arg.NP_MATMUL[0]   : life.nump.matmul,
+#              arg.SP_MATMUL[0]   : life.scip.matmul,
+#              arg.SP_CONVOLVE[0] : life.scip.convolve}
+
+ALGORITHMS = {**{key : life.nump.roll     for key in arg.NP_ROLL},
+              **{key : life.nump.matmul   for key in arg.NP_MATMUL},
+              **{key : life.scip.matmul   for key in arg.SP_MATMUL},
+              **{key : life.scip.convolve for key in arg.SP_CONVOLVE}}
 
 
 sigmas = {5 : 10*[0] + [True],
