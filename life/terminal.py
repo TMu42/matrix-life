@@ -36,7 +36,7 @@ def initialize(args):
     
     running = True
     
-    paused = False
+    paused = args.paused
     
     return field
 

@@ -60,8 +60,8 @@ def main(argv):
                 _wait(0.01)
     except KeyboardInterrupt:
         pass
-    #except Exception as e:
-    #    sys.stderr.write(str(e))
+    except Exception as e:
+        sys.stderr.write(str(e))
     
     _quit()
 
@@ -71,11 +71,17 @@ def _initialize(argv):
     
     args = arg.get_args(argv)
     
-    golife = ALGORITHMS[args.algorithm]
+    if args.algorithm in arg.DEFAULT:
+        golife = ALGORITHMS[arg.NP_ROLL[0]]
+    else:
+        golife = ALGORITHMS[args.algorithm]
     
     world = golife.new_world(*args.size)
     
     frame = [0]
+    
+    if args.outmode in arg.DEFAULT:
+        args.outmode = arg.TERMINAL[0]
     
     if args.outmode in arg.TERMINAL:
         surface = term.initialize(args)
