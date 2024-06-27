@@ -10,10 +10,15 @@ import life.graphics as graph
 import life.arguments as arg
 
 
-ALGORITHMS = [life.nump.roll,      #   7s / 100   @ 1300x280
-              life.nump.matmul,    # 200s / 100   @ 1300x280
-              life.scip.matmul,    #  11s / 100   @ 1300x280
-              life.scip.convolve]  #   8s / 100   @ 1300x280
+#ALGORITHMS = [life.nump.roll,      #   7s / 100   @ 1300x280
+#              life.nump.matmul,    # 200s / 100   @ 1300x280
+#              life.scip.matmul,    #  11s / 100   @ 1300x280
+#              life.scip.convolve]  #   8s / 100   @ 1300x280
+
+ALGORITHMS = {arg.NP_ROLL[0]     : life.nump.roll,
+              arg.NP_MATMUL[0]   : life.nump.matmul,
+              arg.SP_MATMUL[0]   : life.scip.matmul,
+              arg.SP_CONVOLVE[0] : life.scip.convolve}
 
 
 sigmas = {5 : 10*[0] + [True],
@@ -50,8 +55,8 @@ def main(argv):
                 _wait(0.01)
     except KeyboardInterrupt:
         pass
-    except Exception as e:
-        sys.stderr.write(str(e))
+    #except Exception as e:
+    #    sys.stderr.write(str(e))
     
     _quit()
 
