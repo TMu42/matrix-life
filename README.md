@@ -14,49 +14,46 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
                                  python main.py [OPTIONS]
                              
                              Options:
-                                 -W, --width=NUMBER
-                                         Set the width (number of columns) of the cellular
-                                         automaton, 0 to infer from the terminal.
-                                   
-                                 -H, --height=NUMBER
-                                         Set the height (number of rows/lines) of the cellular
-                                         automaton, 0 to infer from the terminal.
-
-                                 -w, --resolution-width
-                                         In graphical mode, set the resolution width in pixels.
-
-                                 -b, --resolution-breadth
-                                         In graphical mode, set the resolution breadth (height)
-                                         in pixels.
+                                 -A, --algorithm=ALGORITHM
+                                         Select the algorithm for executing Conway's Game of
+                                         Life. ALGORITHM may be any of: "numpy-roll",
+                                         "numpy-matmul", "scipy-matmul" or "scipy-convolve",
+                                         or accepted aliases/abbreviations for these.
+                                 
+                                 -d, --delay=NUMBER
+                                         Set the delay interval between iterations, 0 for no
+                                         delay. NUMBER is in seconds but may take floating
+                                         point values.
                                  
                                  -F, --fullscreen
                                          In graphical mode, set display to fullscreen.
-                                 
-                                 -D, --delay=NUMBER
-                                         Set the delay interval between iterations, 0 for no
-                                         delay, negative for user step-by-step mode.
 
-                                 -R, --numpy-roll
-                                         Select the numpy.roll() implementation of the Game of
-                                         Life algorithm. (Default)
+                                 -O, --outmode=OUTMODE
+                                         Select the output mode. OUTMODE may be either
+                                         "terminal" or "graphical", or accepted aliases/
+                                         abbreviations for these.
 
-                                 -M, --numpy-matmul
-                                         Select the numpy.ndarray.__matmul__() implementation
-                                         of the Game of Life algorithm.
+                                 -p, --paused
+                                         Start Conway's Game of Life in paused mode. To
+                                         toggle pause during execution, tap 'p'.
 
-                                 -S, --scipy-matmul
-                                         Select scipy.sparse.__matmul__() implementation of the
-                                         Game of Life algorithm.
+                                 -q, --quiet
+                                         Decrease the verbosity of accompanying information
+                                         to output for each instance of flag.
 
-                                 -C, --scipy-convolve
-                                         Select scipy.ndimage.__convolve__() implementation of
-                                         the Game of Life algorithm.
+                                 -r, --resolution WIDTH [HEIGHT]
+                                         Enter the display resolution for the output, if
+                                         only WIDTH is specified, HEIGHT = WIDTH.
 
-                                 -T, --terminal
-                                         Set display output as terminal - STDOUT (Default)
+                                 -s, --size WIDTH [HEIGHT]
+                                         Enter the size of the matrix to initialize for
+                                         Conway's Game of Life. If only WIDTH is specified,
+                                         HEIGHT = WIDTH.
 
-                                 -G, --graphical
-                                         Set display output as graphical - PyGame (Ignored)
+                                 -v, --verbose
+                                         Increase the verbosity of accompanying information
+                                         to output for each instance of flag.
+
     
     gmain.py            -    Graphical version of main python script, (deprecated, use main.py).
                              Invoke with:
