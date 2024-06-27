@@ -91,7 +91,9 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
     
     terminal.py     -    Terminal output handling
 
-### matrix-life/life/numpy/
+    utils.py        -    Shared general utility functions
+
+### matrix-life/life/nump/
     
     __init__.py    -    Initiation file for subpackage numpy
     
@@ -99,7 +101,7 @@ This repository implements the classic [Cellular Automaton](https://en.wikipedia
     
     matmul.py      -    Game of Life implementation with numpy.ndarray.__matmul__()
 
-### matrix-life/life/scipy/
+### matrix-life/life/scip/
     
     __init__.py    -    Initiation file for subpackage scipy
     
