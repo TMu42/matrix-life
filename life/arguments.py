@@ -7,8 +7,11 @@ HEIGHT =  28
 
 DELAY = 0.05
 
-OUT_TERM  = 0
-OUT_GRAPH = 1
+DEFAULT   = ["default", "def", 'd']
+TERMINAL  = ["terminal", "term", 't', "curses"]
+GRAPHICAL = ["graphical", "graph", 'g', "pygame"]
+
+OUTPUTS = DEFAULT + TERMINAL + GRAPHICAL
 
 RES_WIDTH  = 960
 RES_HEIGHT = 540
@@ -27,13 +30,9 @@ def get_args(argv):
     
     _normalize_size_resolution(args)
     
-    #args = _normalize_width_height_delay(args)
-    
     args = _normalize_algorithm(args)
     
-    args = _normalize_outmode(args)
-    
-    #args = _normalize_resolution(args)
+    _normalize_outmode(args)
     
     return args
 
@@ -49,17 +48,11 @@ def _get_raw_args(args):
     parser.add_argument('-d', "--delay", type=float, default=DELAY)
     
     parser.add_argument('-r', "--resolution", type=int, nargs='+',
-                                              default=[WIDTH, HEIGHT])
-    parser.add_argument('-s', "--size",       type=int, nargs='+',
                                               default=[RES_WIDTH, RES_HEIGHT])
+    parser.add_argument('-s', "--size",       type=int, nargs='+',
+                                              default=[WIDTH, HEIGHT])
     
-    
-#    parser.add_argument('-W', "--width")
-#    parser.add_argument('-H', "--height")
-#    parser.add_argument('-D', "--delay")
-    
-#    parser.add_argument('-w', "--resolution-width")
-#    parser.add_argument('-b', "--resolution-breadth")
+    parser.add_argument('-O', '--outmode', choices=OUTPUTS, default=DEFAULT)
     
     parser.add_argument('-F', "--fullscreen", action="store_true")
     
@@ -76,13 +69,13 @@ def _get_raw_args(args):
                                                   dest="algorithm",
                                                   const=3)
     
-    parser.add_argument('-T', "--terminal", action="store_const",
-                                            dest="outmode",
-                                            const=OUT_TERM)
+    #parser.add_argument('-T', "--terminal", action="store_const",
+    #                                        dest="outmode",
+    #                                        const=OUT_TERM)
     
-    parser.add_argument('-G', "--graphical", action="store_const",
-                                             dest="outmode",
-                                             const=OUT_GRAPH)
+    #parser.add_argument('-G', "--graphical", action="store_const",
+    #                                         dest="outmode",
+    #                                         const=OUT_GRAPH)
     
     return parser.parse_args(args=args[1:])
 
@@ -94,8 +87,6 @@ def _normalize_verbose_quiet(args):
     
     args.verbose -= quiet
     
-    #return args
-
 
 def _normalize_size_resolution(args):
     if len(args.resolution) == 1:
@@ -106,41 +97,6 @@ def _normalize_size_resolution(args):
         args.size = tuple(2*args.size)
     else:
         args.size = tuple(args.size[:2])
-
-#def _normalize_width_height_delay(args):
-#    if args.width is None:
-#        args.width = WIDTH
-#    else:
-#        args.width = int(args.width)
-#    
-#    if args.height is None:
-#        args.height = HEIGHT
-#    else:
-#        args.height = int(args.height)
-#    
-#    if args.delay is None:
-#        args.delay = DELAY
-#    else:
-#        args.delay = float(args.delay)
-#    
-#    if args.width == 0:
-#        terminal_size = shutil.get_terminal_size()
-#        
-#        args.width = terminal_size.columns - 2
-#    
-#    if args.height == 0:
-#        terminal_size = shutil.get_terminal_size()
-#        
-#        if args.verbose < 0:
-#            info_lines = 0
-#        elif args.verbose < 2:
-#            info_lines = 1
-#        else:
-#            info_lines = 5
-#        
-#        args.height = terminal_size.lines - (4 + info_lines)
-#    
-#    return args
 
 
 def _normalize_algorithm(args):
@@ -153,31 +109,11 @@ def _normalize_algorithm(args):
 
 
 def _normalize_outmode(args):
-    if args.outmode is None:
-        args.outmode = 0
-    else:
-        args.outmode = int(args.outmode)
-    
-    return args
-
-
-def _normalize_resolution(args):
-    if not args.fullscreen:
-        if args.resolution_width is None:
-            args.resolution_width = args.width
-        
-        if args.resolution_breadth is None:
-            args.resolution_breadth = args.height
-        
-        args.resolution_width   = int(args.resolution_width)
-        args.resolution_breadth = int(args.resolution_breadth)
-        
-        args.resolution_width = max(MIN_RESOLUTION_WIDTH,
-                                    min(args.resolution_width,
-                                        MAX_RESOLUTION_WIDTH))
-        
-        args.resolution_breadth = max(MIN_RESOLUTION_HEIGHT,
-                                     min(args.resolution_breadth,
-                                         MAX_RESOLUTION_HEIGHT))
-    
-    return args
+    if args.outmode in DEFAULT:
+        args.outmode = TERMINAL[0]
+#    if args.outmode is None:
+#        args.outmode = 0
+#    else:
+#        args.outmode = int(args.outmode)
+#    
+#    return args

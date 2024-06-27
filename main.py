@@ -67,9 +67,9 @@ def _initialize(argv):
     
     frame = [0]
     
-    if args.outmode == arg.OUT_TERM:
+    if args.outmode in arg.TERMINAL:
         surface = term.initialize(args)
-    elif args.outmode == arg.OUT_GRAPH:
+    elif args.outmode in arg.GRAPHICAL:
         surface = graph.initialize(args)
 
 
@@ -92,34 +92,34 @@ def _update_sigmas(frame, total):
 
 
 def _paint_board(**kwargs):
-    if args.outmode == arg.OUT_GRAPH:
+    if args.outmode in arg.GRAPHICAL:
         graph.paint_board(surface, world)
-    elif args.outmode == arg.OUT_TERM:
+    elif args.outmode in arg.TERMINAL:
         term.paint_board(surface, world)#, **kwargs)
 
 
 def _events():
-    if args.outmode == arg.OUT_GRAPH:
+    if args.outmode in arg.GRAPHICAL:
         graph.events()
-    elif args.outmode == arg.OUT_TERM:
+    elif args.outmode in arg.TERMINAL:
         term.events()
 
 
 def _running():
     global args
     
-    if args.outmode == arg.OUT_GRAPH:
+    if args.outmode in arg.GRAPHICAL:
         return graph.running
-    elif args.outmode == arg.OUT_TERM:
+    elif args.outmode in arg.TERMINAL:
         return term.running
     else:
         return True
 
 
 def _paused():
-    if args.outmode == arg.OUT_GRAPH:
+    if args.outmode in arg.GRAPHICAL:
         return graph.paused
-    elif args.outmode == arg.OUT_TERM:
+    elif args.outmode in arg.TERMINAL:
         return term.paused
     else:
         return False
@@ -142,9 +142,9 @@ def _wait(seconds):
 
 
 def _quit():
-    if args.outmode == arg.OUT_GRAPH:
+    if args.outmode in arg.GRAPHICAL:
         graph.end()
-    elif args.outmode == arg.OUT_TERM:
+    elif args.outmode in arg.TERMINAL:
         term.end()
         #print("\b\b  ", end='')
         
