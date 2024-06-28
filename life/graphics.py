@@ -27,6 +27,8 @@ class GraphicsView(mvc.View):
     def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
                        colours=COLOURS, fullscreen=False, icon_file=ICON_FILE,
                        caption=CAPTION):
+        self._matrix = None
+        self._updates = False
         self._resolution = (resolution[0], resolution[-1])
         self._scale = scale
         self._position = position
@@ -62,7 +64,36 @@ class GraphicsView(mvc.View):
         else:
             self._canvas = pygame.display.set_mode(self._resolution,
                                                    flags=pygame.RESIZEABLE)
-
+    
+    def update(self, matrix=None, flush=False):
+        if matrix is not None and matrix != self._matrix:
+            self._matrix = matrix
+            self._updates = True
+        
+        if flush and self._updates:
+            r_pixels = (ONE_R - ZERO_R) \
+                      *numpy.atleast_3d(self._matrix.T) + ZERO_R
+            g_pixels = (ONE_G - ZERO_G) \
+                      *numpy.atleast_3d(self._matrix.T) + ZERO_G
+            b_pixels = (ONE_B - ZERO_B) \
+                      *numpy.atleast_3d(self._matrix.T) + ZERO_B
+            
+            pixels = numpy.concatenate((r_pixels, g_pixels, b_pixels), axis=2)
+            
+            surface = pygame.surfarray.make_surface(pixels)
+            
+            surface = pygame.transform.scale(surface,
+                                             self._canvas.get_rect()[2:])
+            
+            self._canvas.blit(surface, (0, 0))
+            
+            pygame.display.flip()
+            
+            self._updates = False
+    
+    def close(self):
+        pygame.display.quit()
+        pygame.quit()
 
 ########### Legacy #####################
 
