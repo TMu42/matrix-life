@@ -13,10 +13,17 @@ class Model:
     
     def reset(self):
         raise NotImplementedError
+    
+    def close(self):
+        raise NotImplementedError
 
 
 class View:
-    def __init__(self, resolution=None, scale=None, scope=None, colours=None):
+    def __init__(self, resolution=None, scale=None, position=None,
+                       colours=None, **kwargs):
+        raise NotImplementedError
+    
+    def update(self, matrix=None, flush=False):
         raise NotImplementedError
     
     def move(self, distance):
@@ -30,6 +37,9 @@ class View:
     
     def scale_to(self, value):
         raise NotImplementedError
+    
+    def close(self):
+        raise NotImplementedError
 
 
 # Not sure if this abstract base class is needed but might be useful...
@@ -41,4 +51,7 @@ class Controller:
         raise NotImplementedError
     
     def handle_events(self):
+        raise NotImplementedError
+    
+    def close(self):
         raise NotImplementedError

@@ -1,6 +1,7 @@
 import numpy
 
 from . import utils
+from . import mvc
 
 globals().update(utils.silent_import("pygame"))
 
@@ -13,7 +14,57 @@ ONE_R  =  29
 ONE_G  = 206
 ONE_B  = 166
 
+RESOLUTION = (1280, 720)
 
+COLOURS = [(ZERO_R, ZERO_G, ZERO_B), (ONE_R, ONE_G, ONE_B)]
+
+ICON_FILE = "icon.ico"
+
+CAPTION = "GraphicsView/Controller"
+
+
+class GraphicsView(mvc.View):
+    def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
+                       colours=COLOURS, fullscreen=False, icon_file=ICON_FILE,
+                       caption=CAPTION):
+        self._resolution = (resolution[0], resolution[-1])
+        self._scale = scale
+        self._position = position
+        self._colours = colours
+        self._fullscreen = fullscreen
+        
+        pygame.init()
+        
+        try:
+            icon = pygame.image.load(icon_file)
+        except (TypeError, FileNotFoundError, pygame.error):
+            try:
+                icon = pygame.image.load(ICON_FILE)
+            except (FileNotFoundError, pygame.error):
+                pass
+            else:
+                pygame.display.set_icon(icon)
+        else:
+            pygame.display.set_icon(icon)
+        
+        if caption is not None:
+            pygame.display.set_caption(caption)
+        else:
+            pygame.display.set_caption(CAPTION)
+        
+        if resolution is not None:
+            self._resolution = (resolution[0], resolution[-1])
+        else:
+            self._resolution = RESOLUTION
+        
+        if fullscreen:
+            self._canvas = pygame.display.set_mode(flags=pygame.FULLSCREEN)
+        else:
+            self._canvas = pygame.display.set_mode(self._resolution,
+                                                   flags=pygame.RESIZEABLE)
+
+
+########### Legacy #####################
 
 def initialize(args):
     global running, paused

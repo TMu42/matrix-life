@@ -38,7 +38,7 @@ RES_HEIGHT = 540
 def get_args(argv):
     args = _get_raw_args(argv)
     
-    _normalize_verbose_quiet(args)
+#    _normalize_verbose_quiet(args)
     
     _normalize_size_resolution(args)
     
