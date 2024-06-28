@@ -39,3 +39,6 @@ class Controller:
     
     def connect_model(self, model):
         raise NotImplementedError
+    
+    def handle_events(self):
+        raise NotImplementedError
