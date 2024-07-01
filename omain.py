@@ -10,15 +10,13 @@ import life.graphics as graph
 import life.arguments as arg
 
 
-#ALGORITHMS = [life.nump.roll,      #   7s / 100   @ 1300x280
-#              life.nump.matmul,    # 200s / 100   @ 1300x280
-#              life.scip.matmul,    #  11s / 100   @ 1300x280
-#              life.scip.convolve]  #   8s / 100   @ 1300x280
-
-#ALGORITHMS = {arg.NP_ROLL[0]     : life.nump.roll,
-#              arg.NP_MATMUL[0]   : life.nump.matmul,
-#              arg.SP_MATMUL[0]   : life.scip.matmul,
-#              arg.SP_CONVOLVE[0] : life.scip.convolve}
+# Algorithm Analytics:
+#
+#   Tests on matrices of size 1300x280, valuse in seconds per 100 steps:
+#       numpy roll:       7
+#       scipy convolve:   8
+#       scipy matmul:    11
+#       numpy matmul:   200
 
 ALGORITHMS = {**{key : life.nump.roll     for key in arg.NP_ROLL},
               **{key : life.nump.matmul   for key in arg.NP_MATMUL},
@@ -33,17 +31,17 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    global world, surface, golife, frame, args
+    global world, view, golife, frame, args
     
     try:
-        _initialize(argv)
+        model, view, controller = _initialize(argv)
         
-        while _running():
-            _paint_board(**(_kwargs(args.verbose)))
+        while controller._running:
+            view.update(world, True)
             
-            _events()
+            controller.handle_events()
             
-            if not _paused():
+            if not controller._paused:
                 _wait(args.delay)
                 
                 if _update_sigmas(frame[-1], sum(sum(world))):
@@ -61,13 +59,15 @@ def main(argv):
     except KeyboardInterrupt:
         pass
     except Exception as e:
-        sys.stderr.write(str(e))
+        _quit()
+        
+        raise
     
     _quit()
 
 
 def _initialize(argv):
-    global world, surface, golife, frame, args
+    global world, golife, frame, args
     
     args = arg.get_args(argv)
     
@@ -84,9 +84,17 @@ def _initialize(argv):
         args.outmode = arg.TERMINAL[0]
     
     if args.outmode in arg.TERMINAL:
-        surface = term.initialize(args)
+        view = term.TerminalView(resolution=args.resolution,
+                                 fullscreen=args.fullscreen)
+        
+        controller = term.TerminalController()
     elif args.outmode in arg.GRAPHICAL:
-        surface = graph.initialize(args)
+        view = graph.GraphicsView(resolution=args.resolution,
+                                  fullscreen=args.fullscreen)
+        
+        controller = graph.GraphicsController()
+    
+    return None, view, controller
 
 
 def _update_sigmas(frame, total):

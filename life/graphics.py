@@ -23,6 +23,10 @@ ICON_FILE = "icon.ico"
 CAPTION = "GraphicsView/Controller"
 
 
+running = True
+paused = False
+
+
 class GraphicsView(mvc.View):
     def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
                        colours=COLOURS, fullscreen=False, icon_file=ICON_FILE,
@@ -63,10 +67,10 @@ class GraphicsView(mvc.View):
             self._canvas = pygame.display.set_mode(flags=pygame.FULLSCREEN)
         else:
             self._canvas = pygame.display.set_mode(self._resolution,
-                                                   flags=pygame.RESIZEABLE)
+                                                   flags=pygame.RESIZABLE)
     
     def update(self, matrix=None, flush=False):
-        if matrix is not None and matrix != self._matrix:
+        if matrix is not None and (matrix != self._matrix).any():
             self._matrix = matrix
             self._updates = True
         
@@ -94,6 +98,36 @@ class GraphicsView(mvc.View):
     def close(self):
         pygame.display.quit()
         pygame.quit()
+
+
+class GraphicsController(mvc.Controller):
+    def __init__(self, model=None):
+        self._model = model
+        
+        self._running = True
+        self._paused  = False
+    
+    def connect_model(self, model):
+        self.model = model
+    
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self._running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key in (pygame.K_ESCAPE, pygame.K_q):
+                    self._running = False
+                elif event.key == pygame.K_p:
+                    self._paused = not self._paused
+            elif event.type == pygame.WINDOWMINIMIZED:
+                self._paused = True
+        
+        if self._model is not None and self._running and not self._paused:
+            self._model.step()
+    
+    def close(self):
+        pass
+
 
 ########### Legacy #####################
 
