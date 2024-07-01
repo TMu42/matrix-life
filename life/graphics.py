@@ -70,8 +70,8 @@ class GraphicsView(mvc.View):
                                                    flags=pygame.RESIZABLE)
     
     def update(self, matrix=None, flush=False):
-        if matrix is not None and (matrix != self._matrix).any():
-            self._matrix = matrix
+        if matrix is not None and (matrix.T != self._matrix).any():
+            self._matrix = matrix.T
             self._updates = True
         
         if flush and self._updates:
@@ -101,14 +101,14 @@ class GraphicsView(mvc.View):
 
 
 class GraphicsController(mvc.Controller):
-    def __init__(self, model=None):
+    def __init__(self, model=None, view=None, delay=0.01):
         self._model = model
+        self._view  = view
+        
+        self._delay = delay
         
         self._running = True
         self._paused  = False
-    
-    def connect_model(self, model):
-        self.model = model
     
     def handle_events(self):
         for event in pygame.event.get():
@@ -124,66 +124,8 @@ class GraphicsController(mvc.Controller):
         
         if self._model is not None and self._running and not self._paused:
             self._model.step()
+            
+            self._view.update(self._model._mat, True)
     
     def close(self):
         pass
-
-
-########### Legacy #####################
-
-#def initialize(args):
-#    global running, paused
-#    
-#    pygame.init()
-#    
-#    icon = pygame.image.load("icon.ico")
-#    
-#    pygame.display.set_icon(icon)
-#    
-#    pygame.display.set_caption("Matrix Life")
-#    
-#    if args.fullscreen:
-#        surface = pygame.display.set_mode(flags=pygame.FULLSCREEN)
-#    else:
-#        surface = pygame.display.set_mode(args.resolution, pygame.RESIZABLE)
-#    
-#    running = True
-#    
-#    paused = args.paused
-#    
-#    return surface
-
-
-#def end():
-#    return
-
-
-#def paint_board(surface, mat):
-#    r_pixels = (ONE_R - ZERO_R)*numpy.atleast_3d(mat.T) + ZERO_R
-#    g_pixels = (ONE_G - ZERO_G)*numpy.atleast_3d(mat.T) + ZERO_G
-#    b_pixels = (ONE_B - ZERO_B)*numpy.atleast_3d(mat.T) + ZERO_B
-#    
-#    life_pixels = numpy.concatenate((r_pixels, g_pixels, b_pixels), axis=2)
-#    
-#    life_surface = pygame.surfarray.make_surface(life_pixels)
-#    
-#    life_surface = pygame.transform.scale(life_surface, surface.get_rect()[2:])
-#    
-#    surface.blit(life_surface, (0, 0))
-#    
-#    pygame.display.flip()
-
-
-#def events():
-#    global running, paused
-#    
-#    for event in pygame.event.get():
-#        if event.type == pygame.QUIT:
-#            running = False
-#        elif event.type == pygame.KEYDOWN:
-#            if event.key in (pygame.K_ESCAPE, pygame.K_q):
-#                running = False
-#            elif event.key == pygame.K_p:
-#                paused = not paused
-#        elif event.type == pygame.WINDOWMINIMIZED:
-#            paused = True

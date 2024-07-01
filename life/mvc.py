@@ -1,4 +1,4 @@
-
+import time
 
 
 class Model:
@@ -44,14 +44,26 @@ class View:
 
 # Not sure if this abstract base class is needed but might be useful...
 class Controller:
-    def __init__(self, model=None, **kwargs):
+    def __init__(self, model=None, view=None, **kwargs):
         raise NotImplementedError
     
     def connect_model(self, model):
-        raise NotImplementedError
+        self._model = model
+    
+    def connect_view(self, model):
+        self._view = view
     
     def handle_events(self):
         raise NotImplementedError
+    
+    def run(self):
+        while self._running:
+            self.handle_events()
+            
+            if not self._paused:
+                time.sleep(self._delay)
+            else:
+                time.sleep(0.01)
     
     def close(self):
         raise NotImplementedError

@@ -36,54 +36,32 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    #global world, view, golife, frame, args
-    
-    try:
+    #try:
         model, view, controller, args = _initialize(argv)
         
-        while controller._running:
-            view.update(model._mat.T, True)
-            
-            controller.handle_events()
-            
-            if not controller._paused:
-                _wait(args.delay)
-                
-                #if _update_sigmas(frame[-1], sum(sum(world))):
-                    #world = golife.new_world(*args.size)
-                    
-                    #frame += [0]
-                    
-                    #continue
-                
-                #world = golife.step(world)
-                
-                #frame[-1] += 1
-            else:
-                _wait(0.01)
-    except KeyboardInterrupt:
-        pass
-    except Exception as e:
-        _quit()
+        controller.run()
         
-        raise
-    
-    _quit()
+        #while controller._running:
+        #    #view.update(model._mat, True)
+        #    
+        #    controller.handle_events()
+        #    
+        #    if not controller._paused:
+        #        _wait(args.delay)
+        #    else:
+        #        _wait(0.01)
+    #except KeyboardInterrupt:
+    #    pass
+    #except Exception as e:
+    #    _quit()
+    #    
+    #    raise
+    #
+    #_quit()
 
 
 def _initialize(argv):
-    #global world, golife, frame, args
-    
     args = arg.get_args(argv)
-    
-    #if args.algorithm in arg.DEFAULT:
-    #    golife = ALGORITHMS[arg.NP_ROLL[0]]
-    #else:
-    #    golife = ALGORITHMS[args.algorithm]
-    #
-    #world = golife.new_world(*args.size)
-    #
-    #frame = [0]
     
     if args.algorithm in arg.DEFAULT:
         args.algorithm = arg.NP_ROLL[0]
@@ -109,7 +87,7 @@ def _initialize(argv):
         view = graph.GraphicsView(resolution=args.resolution,
                                   fullscreen=args.fullscreen)
         
-        controller = graph.GraphicsController(model)
+        controller = graph.GraphicsController(model, view, args.delay)
     
     return model, view, controller, args
 
