@@ -4,6 +4,11 @@ import time
 
 import life
 
+import life.nump.roll     as nproll
+import life.nump.matmul   as npmatmul
+import life.scip.matmul   as spmatmul
+import life.scip.convolve as spconv
+
 import life.terminal as term
 import life.graphics as graph
 
@@ -31,29 +36,29 @@ sigmas = {5 : 10*[0] + [True],
 
 
 def main(argv):
-    global world, view, golife, frame, args
+    #global world, view, golife, frame, args
     
     try:
-        model, view, controller = _initialize(argv)
+        model, view, controller, args = _initialize(argv)
         
         while controller._running:
-            view.update(world, True)
+            view.update(model._mat.T, True)
             
             controller.handle_events()
             
             if not controller._paused:
                 _wait(args.delay)
                 
-                if _update_sigmas(frame[-1], sum(sum(world))):
-                    world = golife.new_world(*args.size)
+                #if _update_sigmas(frame[-1], sum(sum(world))):
+                    #world = golife.new_world(*args.size)
                     
-                    frame += [0]
+                    #frame += [0]
                     
-                    continue
+                    #continue
                 
-                world = golife.step(world)
+                #world = golife.step(world)
                 
-                frame[-1] += 1
+                #frame[-1] += 1
             else:
                 _wait(0.01)
     except KeyboardInterrupt:
@@ -67,18 +72,30 @@ def main(argv):
 
 
 def _initialize(argv):
-    global world, golife, frame, args
+    #global world, golife, frame, args
     
     args = arg.get_args(argv)
     
+    #if args.algorithm in arg.DEFAULT:
+    #    golife = ALGORITHMS[arg.NP_ROLL[0]]
+    #else:
+    #    golife = ALGORITHMS[args.algorithm]
+    #
+    #world = golife.new_world(*args.size)
+    #
+    #frame = [0]
+    
     if args.algorithm in arg.DEFAULT:
-        golife = ALGORITHMS[arg.NP_ROLL[0]]
-    else:
-        golife = ALGORITHMS[args.algorithm]
+        args.algorithm = arg.NP_ROLL[0]
     
-    world = golife.new_world(*args.size)
-    
-    frame = [0]
+    if args.algorithm in arg.NP_ROLL:
+        model = nproll.GOLNumpyRollModel(args.size)
+    elif args.algorithm in arg.NP_MATMUL:
+        model = npmatmul.GOLNumpyMatmulModel(args.size)
+    elif args.algorithm in arg.SP_MATMUL:
+        model = spmatmul.GOLScipyMatmulModel(args.size)
+    elif args.algorithm in arg.SP_CONVOLVE:
+        model = spconv.GOLScipyConvolveModel(args.size)
     
     if args.outmode in arg.DEFAULT:
         args.outmode = arg.TERMINAL[0]
@@ -87,14 +104,14 @@ def _initialize(argv):
         view = term.TerminalView(resolution=args.resolution,
                                  fullscreen=args.fullscreen)
         
-        controller = term.TerminalController()
+        controller = term.TerminalController(model)
     elif args.outmode in arg.GRAPHICAL:
         view = graph.GraphicsView(resolution=args.resolution,
                                   fullscreen=args.fullscreen)
         
-        controller = graph.GraphicsController()
+        controller = graph.GraphicsController(model)
     
-    return None, view, controller
+    return model, view, controller, args
 
 
 def _update_sigmas(frame, total):
@@ -166,10 +183,11 @@ def _wait(seconds):
 
 
 def _quit():
-    if args.outmode in arg.GRAPHICAL:
-        graph.end()
-    elif args.outmode in arg.TERMINAL:
-        term.end()
+    pass
+    #if args.outmode in arg.GRAPHICAL:
+    #    graph.end()
+    #elif args.outmode in arg.TERMINAL:
+    #    term.end()
         #print("\b\b  ", end='')
         
         #sys.stdout.flush()

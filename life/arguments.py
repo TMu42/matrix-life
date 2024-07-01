@@ -2,8 +2,8 @@ import argparse
 import shutil
 
 
-WIDTH  = 130
-HEIGHT =  28
+WIDTH  =  96
+HEIGHT =  54
 
 DELAY = 0.05
 

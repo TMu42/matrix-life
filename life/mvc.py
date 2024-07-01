@@ -2,7 +2,7 @@
 
 
 class Model:
-    def __init__(self, size, density=None, source=None, offset=None):
+    def __init__(self, size, density=None, source=None, offset=None, **kwargs):
         raise NotImplementedError
     
     def step(self, steps=1):
@@ -44,7 +44,7 @@ class View:
 
 # Not sure if this abstract base class is needed but might be useful...
 class Controller:
-    def __init__(self, model=None):
+    def __init__(self, model=None, **kwargs):
         raise NotImplementedError
     
     def connect_model(self, model):

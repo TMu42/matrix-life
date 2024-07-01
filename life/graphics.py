@@ -23,8 +23,8 @@ ICON_FILE = "icon.ico"
 CAPTION = "GraphicsView/Controller"
 
 
-running = True
-paused = False
+#running = True
+#paused = False
 
 
 class GraphicsView(mvc.View):
@@ -131,62 +131,59 @@ class GraphicsController(mvc.Controller):
 
 ########### Legacy #####################
 
-def initialize(args):
-    global running, paused
-    
-    pygame.init()
-    
-    icon = pygame.image.load("icon.ico")
-    
-    pygame.display.set_icon(icon)
-    
-    pygame.display.set_caption("Matrix Life")
-    
-    if args.fullscreen:
-        surface = pygame.display.set_mode(flags=pygame.FULLSCREEN)
-    else:
-        surface = pygame.display.set_mode(args.resolution, pygame.RESIZABLE)
-    
-    running = True
-    
-    paused = args.paused
-    
-    return surface
+#def initialize(args):
+#    global running, paused
+#    
+#    pygame.init()
+#    
+#    icon = pygame.image.load("icon.ico")
+#    
+#    pygame.display.set_icon(icon)
+#    
+#    pygame.display.set_caption("Matrix Life")
+#    
+#    if args.fullscreen:
+#        surface = pygame.display.set_mode(flags=pygame.FULLSCREEN)
+#    else:
+#        surface = pygame.display.set_mode(args.resolution, pygame.RESIZABLE)
+#    
+#    running = True
+#    
+#    paused = args.paused
+#    
+#    return surface
 
 
-def end():
-    return
+#def end():
+#    return
 
 
-def paint_board(surface, mat):
-    r_pixels = (ONE_R - ZERO_R)*numpy.atleast_3d(mat.T) + ZERO_R
-    g_pixels = (ONE_G - ZERO_G)*numpy.atleast_3d(mat.T) + ZERO_G
-    b_pixels = (ONE_B - ZERO_B)*numpy.atleast_3d(mat.T) + ZERO_B
-    
-    life_pixels = numpy.concatenate((r_pixels, g_pixels, b_pixels), axis=2)
-    
-    life_surface = pygame.surfarray.make_surface(life_pixels)
-    
-    life_surface = pygame.transform.scale(life_surface, surface.get_rect()[2:])
-    
-    surface.blit(life_surface, (0, 0))
-    
-    pygame.display.flip()
+#def paint_board(surface, mat):
+#    r_pixels = (ONE_R - ZERO_R)*numpy.atleast_3d(mat.T) + ZERO_R
+#    g_pixels = (ONE_G - ZERO_G)*numpy.atleast_3d(mat.T) + ZERO_G
+#    b_pixels = (ONE_B - ZERO_B)*numpy.atleast_3d(mat.T) + ZERO_B
+#    
+#    life_pixels = numpy.concatenate((r_pixels, g_pixels, b_pixels), axis=2)
+#    
+#    life_surface = pygame.surfarray.make_surface(life_pixels)
+#    
+#    life_surface = pygame.transform.scale(life_surface, surface.get_rect()[2:])
+#    
+#    surface.blit(life_surface, (0, 0))
+#    
+#    pygame.display.flip()
 
 
-def events():
-    global running, paused
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key in (pygame.K_ESCAPE, pygame.K_q):
-                running = False
-            elif event.key == pygame.K_p:
-                paused = not paused
-        elif event.type == pygame.WINDOWMINIMIZED:
-            paused = True
-
-
-
+#def events():
+#    global running, paused
+#    
+#    for event in pygame.event.get():
+#        if event.type == pygame.QUIT:
+#            running = False
+#        elif event.type == pygame.KEYDOWN:
+#            if event.key in (pygame.K_ESCAPE, pygame.K_q):
+#                running = False
+#            elif event.key == pygame.K_p:
+#                paused = not paused
+#        elif event.type == pygame.WINDOWMINIMIZED:
+#            paused = True
