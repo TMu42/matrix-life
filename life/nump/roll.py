@@ -11,7 +11,9 @@ class GOLNumpyRollModel(mvc.Model):
         if source is not None:
             raise NotImplementedError("Matrix source not (yet) supported")
         
-        self._mat = rng.integers(2, size=size, dtype=numpy.uint8)
+        self._size = size[::-1]
+        
+        self._mat = rng.integers(2, size=self._size, dtype=numpy.uint8)
         
         self._steps = 0
         

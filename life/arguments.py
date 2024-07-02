@@ -81,11 +81,14 @@ def _normalize_verbose_quiet(args):
     
 
 def _normalize_size_resolution(args):
-    if len(args.resolution) == 1:
-        args.resolution = tuple(2*args.resolution)
-    else:
-        args.resolution = tuple(args.resolution[:2])
-    if len(args.size) == 1:
-        args.size = tuple(2*args.size)
-    else:
-        args.size = tuple(args.size[:2])
+    #if len(args.resolution) == 1:
+    #    args.resolution = tuple(2*args.resolution)
+    #else:
+    #    args.resolution = tuple(args.resolution[:2])
+    #if len(args.size) == 1:
+    #    args.size = tuple(2*args.size)
+    #else:
+    #    args.size = tuple(args.size[:2])
+    
+    args.size       = (args.size[0],       args.size[-1])
+    args.resolution = (args.resolution[0], args.resolution[-1])

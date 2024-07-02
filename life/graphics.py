@@ -75,8 +75,8 @@ class GraphicsView(mvc.View):
         if self._closed:
             raise ValueError("Operation on closed View.")
         
-        if matrix is not None and (matrix.T != self._matrix).any():
-            self._matrix = matrix.T
+        if matrix is not None and (matrix != self._matrix).any():
+            self._matrix = matrix
             self._updates = True
         
         if flush and self._updates:
