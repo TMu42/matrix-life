@@ -2,7 +2,8 @@ import time
 
 
 class Model:
-    def __init__(self, size, density=None, source=None, offset=None, **kwargs):
+    def __init__(self, size, density=None, source=None, offset=None,
+                             rollback=0, **kwargs):
         raise NotImplementedError
     
     def step(self, steps=1):
