@@ -7,7 +7,8 @@ rng = numpy.random.default_rng()
 
 
 class GOLNumpyRollModel(mvc.Model):
-    def __init__(self, size, density=0.5, source=None, offset=None):
+    def __init__(self, size, density=0.5, source=None, offset=None,
+                             rollback=0):
         if source is not None:
             raise NotImplementedError("Matrix source not (yet) supported")
         

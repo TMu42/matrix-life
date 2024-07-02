@@ -12,7 +12,8 @@ rng = numpy.random.default_rng()
 
 
 class GOLScipyConvolveModel(mvc.Model):
-    def __init__(self, size, density=0.5, source=None, offset=None):
+    def __init__(self, size, density=0.5, source=None, offset=None,
+                             rollback=0):
         if source is not None:
             raise NotImplementedError("Matrix source not (yet) supported")
         
@@ -43,28 +44,3 @@ class GOLScipyConvolveModel(mvc.Model):
         
         self._mat = numpy.minimum(_neighbours//5, 1) \
                   - numpy.minimum(_neighbours//8, 1)
-
-
-########## Legacy #############################
-
-
-#KERNEL = [[2, 2, 2],
-#          [2, 1, 2],
-#          [2, 2, 2]]
-
-#rng = numpy.random.default_rng()
-
-#def new_world(width, height=None):
-#    if height is None:
-#        height = width
-#    
-#    return rng.integers(2, size=[height, width], dtype=numpy.uint8)
-
-
-#def step(A):
-#    neighbours = scipy.ndimage.convolve(A, KERNEL, mode="wrap")
-#    
-#    new_A = numpy.minimum(neighbours//5, 1) \
-#          - numpy.minimum(neighbours//8, 1)
-#    
-#    return new_A

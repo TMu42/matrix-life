@@ -23,10 +23,6 @@ ICON_FILE = "icon.ico"
 CAPTION = "GraphicsView/Controller"
 
 
-#running = True
-#paused = False
-
-
 class GraphicsView(mvc.View):
     def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
                        colours=COLOURS, fullscreen=False, icon_file=ICON_FILE,
