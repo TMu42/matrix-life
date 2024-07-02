@@ -55,8 +55,7 @@ def _get_raw_args(args):
     
     parser.add_argument('-d', "--delay", type=float, default=DELAY)
     
-    parser.add_argument('-r', "--resolution", type=int, nargs='+',
-                                              default=[RES_WIDTH, RES_HEIGHT])
+    parser.add_argument('-r', "--resolution", type=int, nargs='+')
     parser.add_argument('-s', "--size",       type=int, nargs='+',
                                               default=[WIDTH, HEIGHT])
     

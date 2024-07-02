@@ -17,8 +17,112 @@ ZERO_DEFAULTS = [55, 17, 0]
 ONE_DEFAULTS  = [49, 14, 6]
 
 
+RESOLUTION = None   #(132, 32)
+
+
 class TerminalView(mvc.View):
-    pass
+    def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
+                       colours=COLOURS, fullscreen=False, icon_file=ICON_FILE,
+                       caption=CAPTION):
+        self._matrix = None
+        self._updates = False
+        self._scale = scale
+        self._position = position
+        self._colours = colours
+        self._fullscreen = fullscreen
+        
+        self._init_curses(resolution)
+        
+        #if resolution is not None:
+        #    self._resolution = (min(RESOLUTION[0], resolution[0]),
+        #                        min(RESOLUTION[1], resolution[-1]))
+        #else:
+        #    self._resolution = RESOLUTION
+        
+        self._closed = False
+    
+    
+    def update(self, matrix=None, flush=False):
+        pass
+    
+    
+    def close(self):
+        pass
+        
+        self._closed = True
+    
+    
+    def _init_curses(self, resolution=None):
+        global stdscr
+        
+        stdscr = curses.initscr()
+        
+        curses.start_color()
+        curses.noecho()
+        curses.cbreak()
+        
+        stdscr.nodelay(True)
+        stdscr.keypad(True)
+        
+        self._restore_cursor = curses.curs_set(0)
+        
+        self._init_colours()
+        self._init_field(resolution) # to implement
+    
+    
+    def _init_colours(self):
+        fg, bg = None, None
+        
+        for col in ZERO_DEFAULTS:
+            if col < curses.COLORS:
+                bg = col
+                
+                break
+        
+        for col in ONE_DEFAULTS:
+            if col < curses.COLORS:
+                fg = col
+                
+                break
+        
+        if fg is None or bg is None or not curses.COLOR_PAIRS > 1:
+            self._colour_pair = 0
+            
+            return
+        
+        if curses.can_change_color():
+            curses.init_color(bg, ZERO_R, ZERO_G, ZERO_B)
+            curses.init_color(fg,  ONE_R,  ONE_G,  ONE_B)
+        
+        curses.init_pair(1, fg, bg)
+        
+        self._colour_pair = 1
+    
+    
+    def _init_field(self, resolution=None):
+        max_h, max_w = stdscr.getmaxyx()
+        
+        max_h -= 2
+        max_w -= 2
+        
+        if resolution is None:
+            _w, _h = max_w, max_h
+        else:
+            _w, _h = min(max_w, resolution[0]), min(max_h, resolution[1])
+        
+        self._resolution = (_w, _h)
+        
+        frame = stdscr.subwin(_h + 2, _w + 2, 0, 0)
+        
+        border = '╔' + _w*'═' + "╗\n"  \
+         + (_h)*('║' + _w*' ' + "║\n") \
+               + '╚' + _w*'═' + '╝'
+        
+        frame.insstr(0, 0, border, curses.color_pair(self._colour_pair))
+        
+        frame.refresh()
+        
+        self._canvas = frame.subwin(_h, _w, 1, 1)
 
 
 class TerminalController(mvc.Controller):
