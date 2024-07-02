@@ -2,6 +2,8 @@ import sys
 import curses
 import time
 
+from . import mvc
+
 
 ZERO_R  = 121
 ZERO_G  =   4
@@ -14,6 +16,16 @@ ONE_B = 648
 ZERO_DEFAULTS = [55, 17, 0]
 ONE_DEFAULTS  = [49, 14, 6]
 
+
+class TerminalView(mvc.View):
+    pass
+
+
+class TerminalController(mvc.Controller):
+    pass
+
+
+############# Legacy ##############################################
 
 def initialize(args):
     global stdscr, running, paused, restore_cursor, colour_pair

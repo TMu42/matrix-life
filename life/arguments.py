@@ -7,19 +7,19 @@ HEIGHT =  54
 
 DELAY = 0.05
 
-DEFAULT   = ["default", "def", 'd']
+DEFAULT   = ["default", "def", "deflt", "dflt", 'd']
 
 NP_MATMUL   = ["numpy-matmul","np-matmul", "n-matmul", "nm",
                "numpy", "np", 'n']
-NP_ROLL     = ["numpy-roll", "np-roll", "n-roll", "nr", 'r']
-SP_MATMUL   = ["scipy-matmul", "sp-matmul", "s-matmul", "sm",
-               "scipy", "sp", 's',
+NP_ROLL     = ["numpy-roll", "np-roll", "n-roll", "nr", "roll", 'r']
+SP_MATMUL   = ["scipy-matmul", "sparse-matmul", "sp-matmul", "s-matmul", "sm",
+               "scipy", "sparse", "sp", 's',
                "matmul", 'm']
 SP_CONVOLVE = ["scipy-convolve", "scipy-conv", "sp-convolve", "sp-conv", "sc",
                "convolve", "conv", 'c']
 
-TERMINAL  = ["terminal", "term", 't', "curses"]
-GRAPHICAL = ["graphical", "graph", 'g', "pygame"]
+TERMINAL  = ["terminal", "term", 't', "ncurses", "nc", "curses", 'c']
+GRAPHICAL = ["graphical", "graph", 'g', "pygame", "pg", 'p']
 
 ALGORITHMS = DEFAULT + NP_MATMUL + NP_ROLL + SP_MATMUL + SP_CONVOLVE
 
