@@ -68,8 +68,13 @@ class GraphicsView(mvc.View):
         else:
             self._canvas = pygame.display.set_mode(self._resolution,
                                                    flags=pygame.RESIZABLE)
+        
+        self._closed = False
     
     def update(self, matrix=None, flush=False):
+        if self._closed:
+            raise ValueError("Operation on closed View.")
+        
         if matrix is not None and (matrix.T != self._matrix).any():
             self._matrix = matrix.T
             self._updates = True
@@ -98,19 +103,15 @@ class GraphicsView(mvc.View):
     def close(self):
         pygame.display.quit()
         pygame.quit()
+        
+        self._closed = True
 
 
 class GraphicsController(mvc.Controller):
-    def __init__(self, model=None, view=None, delay=0.01):
-        self._model = model
-        self._view  = view
-        
-        self._delay = delay
-        
-        self._running = True
-        self._paused  = False
-    
     def handle_events(self):
+        if self._closed:
+            raise ValueError("Operation on closed Controller.")
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self._running = False
@@ -126,6 +127,3 @@ class GraphicsController(mvc.Controller):
             self._model.step()
             
             self._view.update(self._model._mat, True)
-    
-    def close(self):
-        pass

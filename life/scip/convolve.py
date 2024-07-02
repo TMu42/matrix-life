@@ -1,6 +1,15 @@
 import numpy
 import scipy
 
+from .. import mvc
+
+
+class GOLScipyConvolveModel(mvc.Model):
+    pass
+
+
+########## Legacy #############################
+
 
 KERNEL = [[2, 2, 2],
           [2, 1, 2],

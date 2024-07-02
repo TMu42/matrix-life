@@ -15,7 +15,7 @@ class Model:
         raise NotImplementedError
     
     def close(self):
-        raise NotImplementedError
+        self._closed = True
 
 
 class View:
@@ -39,31 +39,64 @@ class View:
         raise NotImplementedError
     
     def close(self):
-        raise NotImplementedError
+        self._closed = True
 
 
-# Not sure if this abstract base class is needed but might be useful...
 class Controller:
-    def __init__(self, model=None, view=None, **kwargs):
-        raise NotImplementedError
+    def __init__(self, model=None, view=None, delay=0.01, **kwargs):
+        if type(self) is Controller:
+            raise NotImplementedError
+        else:
+            self._model = model
+            self._view  = view
+            
+            self._delay = delay
+            
+            self._running = True
+            self._paused  = False
+            self._closed  = False
     
     def connect_model(self, model):
+        if self._closed:
+            raise ValueError("Operation on closed Controller.")
+        
         self._model = model
     
     def connect_view(self, model):
+        if self._closed:
+            raise ValueError("Operation on closed Controller.")
+        
         self._view = view
     
     def handle_events(self):
         raise NotImplementedError
     
     def run(self):
-        while self._running:
-            self.handle_events()
+        if self._closed:
+            raise ValueError("Operation on closed Controller.")
+        
+        try:
+            while self._running:
+                self.handle_events()
+                
+                if not self._paused:
+                    time.sleep(self._delay)
+                else:
+                    time.sleep(0.01)
+        except KeyboardInterrupt:
+            pass
+        except BaseException:
+            self.close()
             
-            if not self._paused:
-                time.sleep(self._delay)
-            else:
-                time.sleep(0.01)
+            raise
+        else:
+            self.close()
     
     def close(self):
-        raise NotImplementedError
+        if self._model is not None:
+            self._model.close()
+        
+        if self._view is not None:
+            self._view.close()
+        
+        self._closed = True

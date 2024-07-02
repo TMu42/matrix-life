@@ -10,12 +10,18 @@ class GOLNumpyRollModel(mvc.Model):
     def __init__(self, size, density=0.5, source=None, offset=None):
         if source is not None:
             raise NotImplementedError("Matrix source not (yet) supported")
+        
         self._mat = rng.integers(2, size=size, dtype=numpy.uint8)
         
         self._steps = 0
+        
+        self._closed = False
     
     
     def step(self, steps=1):
+        if self._closed:
+            raise ValueError("Operation on closed Model.")
+        
         if steps < 0:
             raise NotImplementedError("Negative steps not (yet) supported")
         
@@ -24,8 +30,6 @@ class GOLNumpyRollModel(mvc.Model):
         
         self._steps += steps
     
-    def close(self):
-        pass
     
     def _roll_step(self):
         neighbours = numpy.roll(self._mat, ( 1,  0), (0, 1)) \

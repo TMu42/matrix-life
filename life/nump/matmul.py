@@ -1,5 +1,13 @@
 import numpy
 
+from .. import mvc
+
+
+class GOLNumpyMatmulModel(mvc.Model):
+    pass
+
+
+########## Legacy #############################
 
 L = {}
 R = {}

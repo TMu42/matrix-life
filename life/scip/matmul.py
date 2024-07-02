@@ -1,6 +1,15 @@
 import numpy
 import scipy
 
+from .. import mvc
+
+
+class GOLScipyMatmulModel(mvc.Model):
+    pass
+
+
+########## Legacy #############################
+
 
 L = {}
 R = {}
