@@ -92,7 +92,7 @@ class Controller:
                 else:
                     time.sleep(0.01)
         except KeyboardInterrupt:
-            pass
+            self.close()
         except BaseException:
             self.close()
             

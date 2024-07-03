@@ -163,6 +163,8 @@ class TerminalController(mvc.Controller):
                     self._running = False
                 elif key in ('p', 'P'):
                     self._paused = not self._paused
+                #elif key in ('x', 'X'):
+                #    raise ValueError("Invalid Key 'X'!")
         except curses.error:
             pass
 
