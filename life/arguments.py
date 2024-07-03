@@ -89,5 +89,7 @@ def _normalize_size_resolution(args):
     #else:
     #    args.size = tuple(args.size[:2])
     
-    args.size       = (args.size[0],       args.size[-1])
-    args.resolution = (args.resolution[0], args.resolution[-1])
+    if args.size is not None:
+        args.size = (args.size[0], args.size[-1])
+    if args.resolution is not None:
+        args.resolution = (args.resolution[0], args.resolution[-1])

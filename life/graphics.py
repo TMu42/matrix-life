@@ -27,6 +27,9 @@ class GraphicsView(mvc.View):
     def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
                        colours=COLOURS, fullscreen=False, icon_file=ICON_FILE,
                        caption=CAPTION):
+        if resolution is None:
+            resolution = RESOLUTION
+        
         self._matrix = None
         self._updates = False
         self._resolution = (resolution[0], resolution[-1])

@@ -13,6 +13,8 @@ ONE_R = 113
 ONE_G = 805
 ONE_B = 648
 
+COLOURS = [(ZERO_R, ZERO_G, ZERO_B), (ONE_R, ONE_G, ONE_B)]
+
 ZERO_DEFAULTS = [55, 17, 0]
 ONE_DEFAULTS  = [49, 14, 6]
 
@@ -22,22 +24,17 @@ RESOLUTION = None   #(132, 32)
 
 class TerminalView(mvc.View):
     def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
-                       colours=COLOURS, fullscreen=False, icon_file=ICON_FILE,
-                       caption=CAPTION):
+                       colours=COLOURS, **kwargs):
+                       #fullscreen=False, icon_file=ICON_FILE,
+                       #caption=CAPTION):
         self._matrix = None
         self._updates = False
         self._scale = scale
         self._position = position
         self._colours = colours
-        self._fullscreen = fullscreen
+        #self._fullscreen = fullscreen
         
         self._init_curses(resolution)
-        
-        #if resolution is not None:
-        #    self._resolution = (min(RESOLUTION[0], resolution[0]),
-        #                        min(RESOLUTION[1], resolution[-1]))
-        #else:
-        #    self._resolution = RESOLUTION
         
         self._closed = False
     
@@ -47,7 +44,13 @@ class TerminalView(mvc.View):
     
     
     def close(self):
-        pass
+        if "stdscr" in globals() and stdscr is not None:
+            stdscr.keypad(False)
+        
+        curses.curs_set(self._restore_cursor)
+        curses.nocbreak()
+        curses.echo()
+        curses.endwin()
         
         self._closed = True
     
@@ -91,8 +94,8 @@ class TerminalView(mvc.View):
             return
         
         if curses.can_change_color():
-            curses.init_color(bg, ZERO_R, ZERO_G, ZERO_B)
-            curses.init_color(fg,  ONE_R,  ONE_G,  ONE_B)
+            curses.init_color(bg, *self._colours[0])#ZERO_R, ZERO_G, ZERO_B)
+            curses.init_color(fg, *self._colours[1])# ONE_R,  ONE_G,  ONE_B)
         
         curses.init_pair(1, fg, bg)
         
