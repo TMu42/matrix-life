@@ -40,7 +40,29 @@ class TerminalView(mvc.View):
     
     
     def update(self, matrix=None, flush=False):
-        pass
+        if self._closed:
+            raise ValueError("Operation on closed View.")
+        
+        if matrix is not None and (matrix != self._matrix).any():
+            self._matrix = matrix
+            self._updates = True
+        
+        if flush and self._updates:
+            _w = min(self._resolution[0], len(self._matrix[0]))
+            _h = min(self._resolution[1], len(self._matrix))
+            
+            for i in range(_h):
+                for j in range(_w):
+                    s = '█' if self._matrix[i, j] else ' '
+                    
+                    if j == width - 1:
+                        self._canvas.insstr(i, j, s,
+                                            curses.color_pair(colour_pair))
+                    else:
+                        self._canvas.addstr(i, j, s,
+                                            curses.color_pair(colour_pair))
+            
+            self._canvas.refresh()
     
     
     def close(self):
@@ -70,7 +92,7 @@ class TerminalView(mvc.View):
         self._restore_cursor = curses.curs_set(0)
         
         self._init_colours()
-        self._init_field(resolution) # to implement
+        self._init_field(resolution)
     
     
     def _init_colours(self):
