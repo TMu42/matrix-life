@@ -48,19 +48,19 @@ class TerminalView(mvc.View):
             self._updates = True
         
         if flush and self._updates:
-            _w = min(self._resolution[0], len(self._matrix[0]))
-            _h = min(self._resolution[1], len(self._matrix))
+            _w = len(self._matrix[0])
+            _h = len(self._matrix)
             
-            for i in range(_h):
-                for j in range(_w):
-                    s = '█' if self._matrix[i, j] else ' '
+            for i in range(self._resolution[1]):
+                for j in range(self._resolution[0]):
+                    s = '█' if self._matrix[i%_h, j%_w] else ' '
                     
-                    if j == width - 1:
+                    if j == self._resolution[0] - 1:
                         self._canvas.insstr(i, j, s,
-                                            curses.color_pair(colour_pair))
+                                       curses.color_pair(self._colour_pair))
                     else:
                         self._canvas.addstr(i, j, s,
-                                            curses.color_pair(colour_pair))
+                                       curses.color_pair(self._colour_pair))
             
             self._canvas.refresh()
     
@@ -151,7 +151,25 @@ class TerminalView(mvc.View):
 
 
 class TerminalController(mvc.Controller):
-    pass
+    def handle_events(self):
+        if self._closed:
+            raise ValueError("Operation on closed Controller.")
+        
+        try:
+            while True:
+                key = stdscr.get_wch()
+                
+                if key in ('\x1b', 'q', 'Q'):
+                    self._running = False
+                elif key in ('p', 'P'):
+                    self._paused = not self._paused
+        except curses.error:
+            pass
+        
+        if self._model is not None and self._running and not self._paused:
+            self._model.step()
+            
+            self._view.update(self._model._mat, True)
 
 
 ############# Legacy ##############################################
