@@ -121,8 +121,3 @@ class GraphicsController(mvc.Controller):
                     self._paused = not self._paused
             elif event.type == pygame.WINDOWMINIMIZED:
                 self._paused = True
-        
-        if self._model is not None and self._running and not self._paused:
-            self._model.step()
-            
-            self._view.update(self._model._mat, True)

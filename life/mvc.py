@@ -80,6 +80,13 @@ class Controller:
             while self._running:
                 self.handle_events()
                 
+                if self._model is not None and self._running \
+                                           and not self._paused:
+                    self._model.step()
+                    
+                    if self._view is not None:
+                        self._view.update(self._model._mat, True)
+                
                 if not self._paused:
                     time.sleep(self._delay)
                 else:
