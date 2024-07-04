@@ -6,7 +6,7 @@ neighbour summing is performed via use of the matmul `@` operator on SciPy's
 sparse arrays.
 
 Classes:
-GOLScipyMatmulModel -- A Model of Game of Life using ndarray's `@` operator.
+GOLScipyMatmulModel -- A Model of Game of Life using sparray's `@` operator.
 """
 
 import numpy
