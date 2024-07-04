@@ -45,7 +45,12 @@ class GOLNumpyRollModel(mvc.Model):
     step_to(self, steps)
             -- Advance or retract the model absolute, Not Implemented.
     _roll_step(self)
-            -- Advance the model one step.
+            -- Advance the model one step, Private.
+    
+    Warning:
+    Any assignment to instance variables or calls to private methods will
+    result in the object entering an illegal and potentially unrecoverable
+    state.
     """
     
     def __init__(self, size, density=0.5, source=None, offset=None,
@@ -62,7 +67,7 @@ class GOLNumpyRollModel(mvc.Model):
         size        -- tuple:   the dimensions (shape) of the "world",
                                 Required.
         density     -- float:   the initial statistical density of living
-                                cells, Default = 0.5.
+                                cells, Default = 0.5, Ignored.
         source      -- string:  a file name to initialize the "world", Not
                                 Implemented.
         offset      -- tuple:   the offset coordinates for source, Ignored.
@@ -122,6 +127,11 @@ class GOLNumpyRollModel(mvc.Model):
         """
         Advance the model one step using the numpy.roll() algorithm.
         
+        Neighbour relations are found by rolling the "world" in each of the 8
+        cardinal directions by one cell and adding the results. The generate
+        and survive conditions are then determined using integer division
+        thresholding.
+        
         Parameters:
         self    -- GOLNumpyRollModel:
                         the object itself, Required.
@@ -131,6 +141,8 @@ class GOLNumpyRollModel(mvc.Model):
         Note:
         This is a private "helper" method, externally this operation should be
         performed by a call to step() with the default value of 1 for steps.
+        External calls to this method may leave the object in an illegal,
+        unrecoverable state.
         """
         neighbours = numpy.roll(self._mat, ( 1,  0), (0, 1)) \
                    + numpy.roll(self._mat, (-1,  0), (0, 1)) \
