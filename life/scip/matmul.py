@@ -55,6 +55,10 @@ class GOLScipyMatmulModel(mvc.Model):
     _matmul_step(self)
             -- Advance the model one step, Private.
     
+    Inherits:
+    close(self)
+            -- Decommission, deactivate and delete the object.
+    
     Warning:
     Any assignment to instance variables or calls to private methods will
     result in the object entering an illegal and potentially unrecoverable
