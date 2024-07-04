@@ -1,5 +1,5 @@
 """
-This module implements John Conway's Game of Life with ndarray.__matmul__().
+This module implements John Conway's Game of Life with NumPy's `@` operator.
 
 The Game of Life "world" is represented as a NumPy Matrix (ndarray) and global
 neighbour summing is performed via use of the matmul `@` operator, also
