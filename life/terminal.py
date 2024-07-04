@@ -53,7 +53,9 @@ class TerminalView(mvc.View):
             
             for i in range(self._resolution[1]):
                 for j in range(self._resolution[0]):
-                    s = '█' if self._matrix[i%_h, j%_w] else ' '
+                    # = "\x1B[38;2;255;0;0m"
+                    s = ('█' if self._matrix[i%_h, j%_w] else ' ')
+                    # + "\x1B[39;49m"
                     
                     if j == self._resolution[0] - 1:
                         self._canvas.insstr(i, j, s,
@@ -85,6 +87,13 @@ class TerminalView(mvc.View):
         curses.start_color()
         curses.noecho()
         curses.cbreak()
+        
+        # DEBUG
+        #sys.stderr.write(
+        #    f"Extended Colours:\t{curses.has_extended_color_support()}\r\n")
+        #sys.stderr.write(f"Colours:\t\t{curses.COLORS}\r\n")
+        #sys.stderr.write(f"Colour Pairs:\t\t{curses.COLOR_PAIRS}\r\n")
+        #sys.stderr.flush()
         
         stdscr.nodelay(True)
         stdscr.keypad(True)
