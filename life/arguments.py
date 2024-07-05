@@ -1,3 +1,30 @@
+"""
+This module provides command line options argument parsing for matrix-life.
+
+Module arguments utilises python core argparse to handle command line
+arguments, setting up an ArgumentParser specifically to handle arguments to
+main.py which are useful for initializing a Model-View-Controller
+configuration for a particular use case.
+
+Constants:
+DEFAULT     -- list of strings to indicate a default argument to an option.
+NP_MATMUL   -- list of strings to indicate the NumPy Matmul algorithm to -A.
+NP_ROLL     -- list of strings to indicate the NumPy Roll algorithm to -A.
+SP_MATMUL   -- list of strings to indicate the SciPy Matmul algorithm to -A.
+SP_CONVOLVE -- list of strings to indicate the SciPy Convolve algorithm to -A.
+TERMINAL    -- list of strings to indicate the Terminal mode output to -O.
+GRAPHICAL   -- list of strings to indicate the Graphical mode output to -O.
+
+Functions:
+get_args(argv)  -- obtain and preprocess arguments from argv.
+_get_raw_args(args)
+                -- initialize the ArgumentParser and parse arguments, Private.
+_normalize_verbose_quiet(args)
+                -- preprocess the verbose and quiet options, Private.
+_normalize_size_resolution(args)
+                -- preprocess the size and resolution options, Private.
+"""
+
 import argparse
 
 
@@ -35,6 +62,21 @@ RES_HEIGHT = 540
 
 
 def get_args(argv):
+    """
+    Obtain and preprocess arguments from argv.
+    
+    This is the only Public function exposed by this module, it is not
+    customizable or modifiable (without editing the Python code). This module
+    has a single use case which is parsing command line arguments to main.py
+    in this project. Pass sys.argv (including argv[0]) to get_args() to get a
+    project specific argparse Namespace.
+    
+    Parameters:
+    argv    -- list:    the argument list, usually sys.argv, Required.
+    
+    returns: Namespace  -- an object containing sensible values for all valid
+                           command line arguments (see the doc for main.py).
+    """
     args = _get_raw_args(argv)
     
 #    _normalize_verbose_quiet(args)
@@ -45,6 +87,20 @@ def get_args(argv):
 
 
 def _get_raw_args(args):
+    """
+    Obtain the "raw" Namespace object as provided by argparse.
+    
+    Appropriately initialize and ArgumentParser and parse args (excluding
+    first element) through this.
+    
+    Parameters:
+    args    -- list:    the argument list, usually sys.argv, Required.
+    
+    Returns: Namespace  -- an object containing "raw" values for all valid
+                           command line arguments (see the doc for main.py).
+    
+    Note: This is a private function, you should not be calling this.
+    """
     parser = argparse.ArgumentParser(prog="Matrix Life",
                                      description="Conway's Game of Life with "
                                                  "NumPy matrices")
@@ -71,6 +127,21 @@ def _get_raw_args(args):
 
 
 def _normalize_verbose_quiet(args):
+    """
+    Preprocess the verbose and quiet flag options.
+    
+    -v and -q are count options on the ArgumentParser. "Sensible" behaviour if
+    some of each are provided is to subtract each from the other (i.e.
+    -qqv = -q : q = 1; v = -1and -vvqqvvqqvqvv = -vv : q = -2; v = 2). This
+    function modifies the Namespace in place.
+    
+    Parameters:
+    args    -- Namespace:   the object out of argparse, Required.
+    
+    Returns: None.
+    
+    Note: This is a private function, you should not be calling this.
+    """
     quiet = args.quiet
     
     args.quiet -= args.verbose
@@ -79,6 +150,23 @@ def _normalize_verbose_quiet(args):
     
 
 def _normalize_size_resolution(args):
+    """
+    Preprocess the size and resolution options.
+    
+    -s and -r are multiple argument options on the ArgumentParser. Each option
+    should result to a tuple of width and height. "Sensible" behaviour is: if
+    one argument is received this should be width and height; if two arguments
+    are recieved, these should be width and height respectively; if more than
+    two arguments are recieved, behaviour is undefined. This function modifies
+    the Namespace in place.
+    
+    Parameters:
+    args    -- Namespace:   the object out of argparse, Required.
+    
+    Returns: None.
+    
+    Note: This is a private function, you should not be calling this.
+    """
     #if len(args.resolution) == 1:
     #    args.resolution = tuple(2*args.resolution)
     #else:
