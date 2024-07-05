@@ -1,3 +1,48 @@
+"""
+A script to initialize and run Model-View-Controller based Cellular Automata.
+
+Invoke with:
+    
+    python main.py [OPTIONS]
+
+Options:
+    -A, --algorithm=ALGORITHM
+        Select the algorithm for executing Conway's Game of Life. ALGORITHM
+        may be any of: "numpy-roll", "numpy-matmul", "scipy-matmul" or
+        "scipy-convolve", or accepted aliases/abbreviations for these.
+    
+    -d, --delay=NUMBER
+        Set the delay interval between iterations, 0 for no delay. NUMBER is
+        in seconds but may take floating point values.
+    
+    -F, --fullscreen
+        In graphical mode, set display to fullscreen.
+    
+    -O, --outmode=OUTMODE
+        Select the output mode. OUTMODE may be either "terminal" or
+        "graphical", or accepted aliases/abbreviations for these.
+    
+    -p, --paused (Ignored)
+        Start Conway's Game of Life in paused mode. To toggle pause during
+        execution, tap 'p'.
+    
+    -q, --quiet (Ignored)
+        Decrease the verbosity of accompanying information to output for each
+        instance of flag.
+    
+    -r, --resolution WIDTH [HEIGHT]
+        Enter the display resolution for the output, if only WIDTH is
+        specified, HEIGHT = WIDTH.
+    
+    -s, --size WIDTH [HEIGHT]
+        Enter the size of the matrix to initialize for Conway's Game of Life.
+        If only WIDTH is specified, HEIGHT = WIDTH.
+    
+    -v, --verbose (Ignored)
+        Increase the verbosity of accompanying information to output for each
+        instance of flag.
+"""
+
 import sys
 
 import life
@@ -7,7 +52,7 @@ import life.arguments as arg
 
 # Algorithm Analytics:
 #
-#   Tests on matrices of size 1300x280, valuse in seconds per 100 steps:
+#   Tests on matrices of size 1300x280, values in seconds per 100 steps:
 #       numpy roll:       7
 #       scipy convolve:   8
 #       scipy matmul:    11
