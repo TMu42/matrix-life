@@ -57,14 +57,14 @@ class GraphicsView(mvc.View):
     _matrix     -- ndarray: the most recently provided automata state.
     _position   -- tuple:   coordinates for the top left corner of _matrix.
     _resolution -- tuple:   the (virtual) size of the display window.
-    _scale      -- float:   the zoom factor in pixels/cell
+    _scale      -- float:   the zoom factor in pixels/cell.
     _updates    -- bool:    flag to indicate _matrix has updates not yet
                             flushed to _canvas.
     
     Methods:
     __init__(self[, resolution][, scale][, position][,
                     colours][, fullscreen][, icon_file][, caption])
-            -- Initialize class object.
+            -- Initialize class object, override View.__init__().
     close(self)
             -- Decommission, deactivate and delete the object,
                override View.close().
@@ -77,7 +77,7 @@ class GraphicsView(mvc.View):
     scale_to(self, value)
             -- scale the view to a value, Not Implemented.
     update(self[, matrix][, flush])
-            -- update and or draw the matrix, override View.update().
+            -- update and/or draw the matrix, override View.update().
     
     Warning:
     Any assignment to instance variables or calls to private methods will
@@ -167,7 +167,8 @@ class GraphicsView(mvc.View):
         This method is primarily for painting or preparing to paint the screen.
         
         Parameters:
-        self    -- Model:   the object itself, Required.
+        self    -- GraphicsView:
+                            the object itself, Required.
         matrix  -- array:   the new matrix data, Default = None.
         flush   -- bool:    whether to output to view screen, Default = False.
         
@@ -215,7 +216,7 @@ class GraphicsView(mvc.View):
         View.close()    -- Abstract Base Class destructor.
         
         Parameters:
-        self    -- Model:   the object itself, Required.
+        self    -- GraphicsView:    the object itself, Required.
         
         Returns None.
         """

@@ -1,6 +1,18 @@
+"""
+Terminal View-Controller for cellular automata Models with (n)curses.
+
+This module provides the View and Controller elements of a
+Model-View-Controller design pattern for operating cellular automata. Python's
+curses binding is used to manage character based terminal output displays and
+also user input event handling.
+
+Classes:
+TerminalView        -- A View for terminal rendering of cellular automata.
+TerminalController  -- A Controller to pair with a TerminalView object.
+"""
+
 import sys
 import curses
-import time
 
 from . import mvc
 
@@ -23,16 +35,89 @@ RESOLUTION = None   #(132, 32)
 
 
 class TerminalView(mvc.View):
+    """
+    A View class implementing rendering of cellular automata with curses.
+    
+    This class handles initialization, output operation and termination of a
+    curses instance for the express purpose of rendering cellular automata in
+    the form of Model objects. This class is intended to be used with
+    compatible Model and Controller objects as part of a Model-View-Controller
+    deign pattern. It is recommended to use the accompanying TerminalController
+    class which handles user input from the curses instance.
+    
+    Extends:
+    .mvc.View   -- Abstract Base Class for Views in the Model-View-Controller.
+    
+    Instance Variables:
+    _canvas     -- window:  the output curses sub window.
+    _closed     -- bool:    the object has been terminated.
+    _colours    -- list:    the display colour scheme.
+    _matrix     -- ndarray: the most recently provided automata state.
+    _position   -- tuple:   coordinates for the top left corner of _matrix.
+    _resolution -- tuple:   the size of the curses window _canvas.
+    _scale      -- float:   the zoom factor in characters/cell.
+    _updates    -- bool:    flag to indicate _matrix has updates not yet
+                            flushed to _canvas.
+    
+    Methods:
+    __init__(self[, resolution][, scale][, position][, colours][, **kwargs])
+            -- Initialize class object, override View.__init__().
+    close(self)
+            -- Decommission, deactivate and delete the object,
+               override View.close().
+    move(self, distance)
+            -- Move the view coordinates by a distance, Not Implemented.
+    move_to(self, position)
+            -- Move the view coordinates to a position, Not Implemented.
+    scale(self, delta)
+            -- scale the view by some delta, Not Implemented.
+    scale_to(self, value)
+            -- scale the view to a value, Not Implemented.
+    update(self[, matrix][, flush])
+            -- update and/or draw the matrix, override View.update().
+    _init_colours(self)
+            -- initialize the curses colour pair scheme, Private.
+    _init_curses(self[, resolution])
+            -- initialize the curses instance, Private.
+    _init_field(self[, resolution])
+            -- initialize the border and subwin _canvas, Private.
+    
+    Warning:
+    Any assignment to instance variables or calls to private methods will
+    result in the object entering an illegal and potentially unrecoverable
+    state.
+    """
+    
     def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
                        colours=COLOURS, **kwargs):
-                       #fullscreen=False, icon_file=ICON_FILE,
-                       #caption=CAPTION):
+        """
+        Initialize TerminalView object.
+        
+        Overrides:
+        View.__init__() -- Abstract Base Class initializer.
+        
+        Parameters:
+        self        -- TerminalView:
+                                the object itself, Required.
+        resolution  -- tuple:   the resolution of the view screen,
+                                Default = None.
+        scale       -- float:   the scale of the view screen in
+                                characters/cell, Default = None.
+        position    -- tuple:   the starting coordinates for the top-left of
+                                matrix, Default = (0, 0).
+        colours     -- list:    the colour scheme for cell values,
+                                Default = [(121, 4, 180), (113, 805, 648)].
+        **kwargs    -- dict:    catch any additional arguments intended for
+                                other implementations of View if they should
+                                go through to the keeper.
+        
+        Returns: None.
+        """
         self._matrix = None
         self._updates = False
         self._scale = scale
         self._position = position
         self._colours = colours
-        #self._fullscreen = fullscreen
         
         self._init_curses(resolution)
         
@@ -40,6 +125,25 @@ class TerminalView(mvc.View):
     
     
     def update(self, matrix=None, flush=False):
+        """
+        Update the internal matrix and/or flush to the view window.
+        
+        Overrides:
+        View.update()   -- Abstract Base Class API method.
+        
+        This method is primarily for painting or preparing to paint the screen.
+        
+        Parameters:
+        self    -- TerminalView:
+                            the object itself, Required.
+        matrix  -- array:   the new matrix data, Default = None.
+        flush   -- bool:    whether to output to view window, Default = False.
+        
+        Returns None.
+        
+        Exceptions Raised:
+        ValueError  -- if self has already been closed with self.close().
+        """
         if self._closed:
             raise ValueError("Operation on closed View.")
         
@@ -68,6 +172,20 @@ class TerminalView(mvc.View):
     
     
     def close(self):
+        """
+        Decommission, deactivate and delete the object permanently.
+        
+        This method closes the curses instance and sets the _closed flag to
+        prevent further operations on self.
+        
+        Overrides:
+        View.close()    -- Abstract Base Class destructor.
+        
+        Parameters:
+        self    -- TerminalView:    the object itself, Required.
+        
+        Returns None.
+        """
         if "stdscr" in globals() and stdscr is not None:
             stdscr.keypad(False)
         
@@ -80,6 +198,28 @@ class TerminalView(mvc.View):
     
     
     def _init_curses(self, resolution=None):
+        """
+        Initialize the curses instance in the current terminal.
+        
+        Perform curses initialization, saving state where necessary to restore
+        at close(). Field and colour initialization is also performed by calls
+        to these private methods.
+        
+        Parameters:
+        self        -- TerminalView:
+                                the object itself, Required.
+        resolution  -- tuple:   the requested screen resolution,
+                                Default = None.
+        
+        Returns: None.
+        
+        Note:
+        This is a private "helper" method, externally this operation should be
+        performed by a call to __init__() or more correctly, by default
+        instanciation of a TerminalView object. External calls to this method
+        may leave the object in an illegal, unrecoverable state or worse,
+        render the terminal unusable.
+        """
         global stdscr
         
         stdscr = curses.initscr()
@@ -105,6 +245,24 @@ class TerminalView(mvc.View):
     
     
     def _init_colours(self):
+        """
+        Initialize the curses colour pairs.
+        
+        Attempt to emmulate the requested colour scheme by initializing colour
+        pairs in curses to a best available match.
+        
+        Parameters:
+        self        -- TerminalView:    the object itself, Required.
+        
+        Returns: None.
+        
+        Note:
+        This is a private "helper" method, externally this operation should be
+        performed by a call to __init__() or more correctly, by default
+        instanciation of a TerminalView object. External calls to this method
+        may leave the object in an illegal, unrecoverable state or worse,
+        render the terminal unusable.
+        """
         fg, bg = None, None
         
         for col in ZERO_DEFAULTS:
@@ -134,6 +292,27 @@ class TerminalView(mvc.View):
     
     
     def _init_field(self, resolution=None):
+        """
+        Initialize the curses sub-window _canvas and the border.
+        
+        Perform a best match to the requested resolution for the current
+        terminal. Save this window in _canvas and paint the border.
+        
+        Parameters:
+        self        -- TerminalView:
+                                the object itself, Required.
+        resolution  -- tuple:   the requested screen resolution,
+                                Default = None.
+        
+        Returns: None.
+        
+        Note:
+        This is a private "helper" method, externally this operation should be
+        performed by a call to __init__() or more correctly, by default
+        instanciation of a TerminalView object. External calls to this method
+        may leave the object in an illegal, unrecoverable state or worse,
+        render the terminal unusable.
+        """
         max_h, max_w = stdscr.getmaxyx()
         
         max_h -= 2
