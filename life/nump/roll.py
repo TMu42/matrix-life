@@ -26,7 +26,7 @@ class GOLNumpyRollModel(mvc.Model):
     provided by NumPy. This class is intended to be used with compatible View
     and Controller objects as part of a Model-View-Controller pattern.
     
-    Inherits:
+    Extends:
     ..mvc.Model -- Abstract Base Class for Models in the Model-View-Controller.
     
     Instance Variables:

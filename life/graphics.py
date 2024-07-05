@@ -1,3 +1,14 @@
+"""
+Graphical View-Controller for cellular automata Models with PyGame.
+
+This module provides the View and Controller elements of a
+Model-View-Controller design pattern for operating cellular automata. PyGame
+is used to manage graphical output displays and also user input event handling.
+
+Classes:
+
+"""
+
 import numpy
 
 from . import utils

@@ -27,7 +27,7 @@ class GOLNumpyMatmulModel(mvc.Model):
     used with compatible View and Controller objects as part of a
     Model-View-Controller pattern.
     
-    Inherits:
+    Extends:
     ..mvc.Model -- Abstract Base Class for Models in the Model-View-Controller.
     
     Instance Variables:
