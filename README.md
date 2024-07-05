@@ -79,7 +79,7 @@ This repository implements a [Linear Algebra](https://en.wikipedia.org/wiki/Line
 
 ### matrix-life/life/nump/
     
-    __init__.py    -    Initiation file for subpackage numpy
+    __init__.py    -    Initiation file for subpackage nump
     
     roll.py        -    Model class for Game of Life implementation with numpy.roll()
     
@@ -87,7 +87,7 @@ This repository implements a [Linear Algebra](https://en.wikipedia.org/wiki/Line
 
 ### matrix-life/life/scip/
     
-    __init__.py    -    Initiation file for subpackage scipy
+    __init__.py    -    Initiation file for subpackage scip
     
     convolve.py    -    Model class for Game of Life implementation with scipy.ndimage.convolve()
     
