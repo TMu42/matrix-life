@@ -157,7 +157,7 @@ class View:
         Initializer for View objects, Abstract.
         
         Parameters:
-        self        -- View:   the object itself, Required.
+        self        -- View:    the object itself, Required.
         resolution  -- tuple:   the resolution of the view screen,
                                 Default = None.
         scale       -- float:   the scale of the view screen in pixels/cell,
@@ -166,7 +166,7 @@ class View:
                                 matrix, Default = None.
         colours     -- list:    the colour scheme for cell values,
                                 Default = None.
-        **kwargs    -- int:     catch any additional arguments provided by
+        **kwargs    -- dict:    catch any additional arguments provided by
                                 subclasses if they should go through to the
                                 keeper.
         
@@ -186,7 +186,7 @@ class View:
         Parameters:
         self    -- Model:   the object itself, Required.
         matrix  -- array:   the new matrix data, Default = None.
-        flush   -- bool:    whether to output to view screen.
+        flush   -- bool:    whether to output to view screen, Default = False.
         
         Returns None.
         

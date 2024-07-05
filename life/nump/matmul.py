@@ -55,7 +55,7 @@ class GOLNumpyMatmulModel(mvc.Model):
             -- Advance the model one step, Private.
     
     Inherits:
-    close(self)
+    Model.close(self)
             -- Decommission, deactivate and delete the object.
     
     Warning:
