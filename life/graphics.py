@@ -235,8 +235,8 @@ class GraphicsController(mvc.Controller):
     class is intended for use with a GraphicsView object providing management
     of the underlying PyGame instance. This class is intended to be used with
     compatible Model and View objects as part of a Model-View-Controller
-    deign pattern. It is not recommended to use this class without attaching a
-    GraphicsView object as behaviour is likely to be unexpected and
+    design pattern. It is not recommended to use this class without attaching
+    a GraphicsView object as behaviour is likely to be unexpected and
     undesirable.
     
     Extends:
@@ -275,6 +275,21 @@ class GraphicsController(mvc.Controller):
     """
     
     def handle_events(self):
+        """
+        Handle PyGame events to provide adaptability and user interactivity.
+        
+        This method provides proper handling of events from the PyGame event
+        queue to provided canonical and extended user input and adaptability
+        to window focus and resize.
+        
+        Parameters:
+        self    -- GraphicsController:  the object itself, Required.
+        
+        Returns None.
+        
+        Exceptions Raised:
+        ValueError  -- if self has already been closed with self.close().
+        """
         if self._closed:
             raise ValueError("Operation on closed Controller.")
         

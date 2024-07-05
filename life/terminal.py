@@ -85,7 +85,7 @@ class TerminalView(mvc.View):
     Warning:
     Any assignment to instance variables or calls to private methods will
     result in the object entering an illegal and potentially unrecoverable
-    state.
+    state or worse, render the terminal unusable.
     """
     
     def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
@@ -339,7 +339,69 @@ class TerminalView(mvc.View):
 
 
 class TerminalController(mvc.Controller):
+    """
+    A Controller class implementing curses event handling on cellular automata.
+    
+    This class does not manage the curses instance but provides Controller API
+    handling of curses input as well as the rest of the Controller API. This
+    class is intended for use with a TerminalView object providing management
+    of the underlying curses instance. This class is intended to be used with
+    compatible Model and View objects as part of a Model-View-Controller
+    design pattern. It is not recommended to use this class without attaching
+    a TerminalView object as behaviour is likely to be unexpected and
+    undesirable.
+    
+    Extends:
+    .mvc.Controller -- Abstract Base Class for Controllers in the
+                       Model-View-Controller.
+    
+    Instance Variables:
+    _model      -- Model:   the Model object to run.
+    _view       -- View:    the View object to update and adjust.
+    _delay      -- float:   additional delay in seconds added to each loop.
+    _running    -- bool:    the automaton is not finished.
+    _paused     -- bool:    the automaton is paused.
+    _closed     -- bool:    the object has been terminated.
+    
+    Methods:
+    handle_events(self)
+            -- Handle curses events, specifically user input,
+               override Controller.handle_events()
+    
+    Inherits:
+    Controller.__init__(self[, model][, view][, delay][, **kwargs])
+            -- Initialize class object.
+    Controller.close(self)
+            -- Decommission, deactivate and delete the object.
+    Controller.connect_model(self, model)
+            -- Connect a Model object to the Controller.
+    Controller.connect_view(self, view)
+            -- Connect a View object to the Controller.
+    Controller.run(self)
+            -- Run the main control loop.
+    
+    Warning:
+    Any assignment to instance variables or calls to private methods will
+    result in the object entering an illegal and potentially unrecoverable
+    state or worse, render the terminal unusable.
+    """
+    
     def handle_events(self):
+        """
+        Handle curses asynchronous input to provide user interactivity.
+        
+        This method provides proper handling of asynchronous curses input and
+        detects property changes to provided canonical user input and
+        adaptability to window state.
+        
+        Parameters:
+        self    -- TerminalController:  the object itself, Required.
+        
+        Returns None.
+        
+        Exceptions Raised:
+        ValueError  -- if self has already been closed with self.close().
+        """
         if self._closed:
             raise ValueError("Operation on closed Controller.")
         
@@ -351,8 +413,6 @@ class TerminalController(mvc.Controller):
                     self._running = False
                 elif key in ('p', 'P'):
                     self._paused = not self._paused
-                #elif key in ('x', 'X'):
-                #    raise ValueError("Invalid Key 'X'!")
         except curses.error:
             pass
 
