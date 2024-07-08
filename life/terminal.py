@@ -35,6 +35,16 @@ RESOLUTION = None   #(132, 32)
 
 SCALE = 1
 
+# Curses constants seem to be incorrect so we provide these alternatives,
+# these may not be very cross-platform compatible as they were detected
+# empirically.
+KEY_A1 = 262
+KEY_A3 = 339
+KEY_B2 = 591
+KEY_C1 = 360
+KEY_C3 = 338
+
+
 
 class TerminalView(mvc.View):
     """
@@ -428,14 +438,24 @@ class TerminalController(mvc.Controller):
                     self._paused = not self._paused
                 elif key in ('\r', '\n', 's', 'S'):
                     self._step = True
-                elif key == curses.KEY_UP:
+                elif key in (curses.KEY_UP, '8'):
                     self._view.move(( 0,  1))
-                elif key == curses.KEY_DOWN:
+                elif key in (curses.KEY_DOWN, '2'):
                     self._view.move(( 0, -1))
-                elif key == curses.KEY_LEFT:
+                elif key in (curses.KEY_LEFT, '4'):
                     self._view.move(( 1,  0))
-                elif key == curses.KEY_RIGHT:
+                elif key in (curses.KEY_RIGHT, '6'):
                     self._view.move((-1,  0))
+                elif key in (curses.KEY_A1, KEY_A1, '7'):  # UP-LEFT
+                    self._view.move(( 1,  1))
+                elif key in (curses.KEY_A3, KEY_A3, '9'):  # UP-RIGHT
+                    self._view.move((-1,  1))
+                elif key in (curses.KEY_C1, KEY_C1, '1'):  # DOWN-LEFT
+                    self._view.move(( 1, -1))
+                elif key in (curses.KEY_C3, KEY_C3, '3'):  # DOWN-LEFT
+                    self._view.move((-1, -1))
+                elif key in (curses.KEY_B2, KEY_B2, '5'):  # MIDDLE
+                    self._view.move_to((0, 0))
                 else:
                     sys.stderr.write(
                             f"{sys.argv[0]}: Unregistered key: {key}\n")
