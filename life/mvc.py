@@ -443,8 +443,8 @@ class Controller:
             while self._running:
                 self.handle_events()
                 
-                if self._model is not None and self._running \  # ADD FIRST
-                                           and not self._paused:# STEP THROUGH!
+                if self._model is not None and self._running \
+                        and (not self._paused or self._model._steps == 0):
                     self._model.step()
                     
                     if self._view is not None:
