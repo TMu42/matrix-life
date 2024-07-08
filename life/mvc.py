@@ -300,7 +300,7 @@ class Controller:
     _closed     -- bool:    the object has been terminated.
     
     Methods:
-    __init__(self[, model][, view][, delay][, **kwargs])
+    __init__(self[, model][, view][, delay][, paused][, **kwargs])
             -- Initialize class object.
     close(self)
             -- Decommission, deactivate and delete the object.
@@ -319,7 +319,8 @@ class Controller:
     This will ensure that assumptions about validity are not violated.
     """
     
-    def __init__(self, model=None, view=None, delay=0.01, **kwargs):
+    def __init__(self, model=None, view=None, delay=0.01,
+                       paused=False, **kwargs):
         """
         Initializer for Controller objects.
         
@@ -331,6 +332,7 @@ class Controller:
                                     Default = None.
         delay       -- float:       the additional delay in seconds per cycle,
                                     Default = 0.01.
+        paused      -- bool:        Start the simulation in paused state.
         **kwargs    -- int:         catch any additional arguments provided by
                                     subclasses if they should go through to the
                                     keeper.
@@ -351,7 +353,7 @@ class Controller:
             self._delay = delay
             
             self._running = True
-            self._paused  = False
+            self._paused  = paused
             self._closed  = False
     
     def connect_model(self, model):
@@ -441,8 +443,8 @@ class Controller:
             while self._running:
                 self.handle_events()
                 
-                if self._model is not None and self._running \
-                                           and not self._paused:
+                if self._model is not None and self._running \  # ADD FIRST
+                                           and not self._paused:# STEP THROUGH!
                     self._model.step()
                     
                     if self._view is not None:
