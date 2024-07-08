@@ -71,16 +71,20 @@ class GraphicsView(mvc.View):
     close(self)
             -- Decommission, deactivate and delete the object,
                override View.close().
-    move(self, distance)
-            -- Move the view coordinates by a distance, Not Implemented.
-    move_to(self, position)
-            -- Move the view coordinates to a position, Not Implemented.
     scale(self, delta)
             -- scale the view by some delta, Not Implemented.
     scale_to(self, value)
             -- scale the view to a value, Not Implemented.
     update(self[, matrix][, flush])
             -- update and/or draw the matrix, override View.update().
+    _decorate_window(self[, icon_file][, caption])
+            -- set the window icon and/or caption.
+    
+    Inherits:
+    View.move(self, distance)
+            -- Move the view coordinates by a relative amount or distance.
+    View.move_to(self, position)
+            -- Move the view coordinates to an absolute position.
     
     Warning:
     Any assignment to instance variables or calls to private methods will
@@ -149,25 +153,6 @@ class GraphicsView(mvc.View):
                                                    flags=pygame.RESIZABLE)
         
         self._closed = False
-
-
-    def _decorate_window(self, icon_file=ICON_FILE, caption=CAPTION):
-        try:
-            icon = pygame.image.load(icon_file)
-        except (TypeError, FileNotFoundError, pygame.error):
-            try:
-                icon = pygame.image.load(ICON_FILE)
-            except (FileNotFoundError, pygame.error):
-                pass
-            else:
-                pygame.display.set_icon(icon)
-        else:
-            pygame.display.set_icon(icon)
-        
-        if caption is not None:
-            pygame.display.set_caption(caption)
-        else:
-            pygame.display.set_caption(CAPTION)
     
     
     def update(self, matrix=None, flush=False):
@@ -237,6 +222,34 @@ class GraphicsView(mvc.View):
         pygame.quit()
         
         self._closed = True
+
+
+    def _decorate_window(self, icon_file=None, caption=None):
+        """
+        Set window icon and/or caption text.
+        
+        Set an icon to identify the window and set the window caption text,
+        i.e. the window title.
+        
+        Parameters:
+        self        -- GraphicsView:    the object itself, Required.
+        icon_file   -- str:             path to the icon image, default = None.
+        caption     -- str:             the window title text, default = None.
+        
+        Returns: None.
+        
+        Note: This is a private method, you should not be calling this.
+        """
+        if icon_file is not None:
+            try:
+                icon = pygame.image.load(icon_file)
+            except (TypeError, FileNotFoundError, pygame.error):
+                pass
+            else:
+                pygame.display.set_icon(icon)
+        
+        if caption is not None:
+            pygame.display.set_caption(caption)
 
 
 class GraphicsController(mvc.Controller):

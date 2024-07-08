@@ -273,10 +273,9 @@ class View:
         """
         Decommission, deactivate and delete the object permanently.
         
-        This is the only non-abstract method in this class and provides basic
-        decommissioning however subclasses implementing this may need to
-        override or extend this to ensure that memory and state are managed
-        and respected cleanly.
+        This non-abstract method provides basic decommissioning however
+        subclasses implementing this may need to override or extend this to
+        ensure that memory and state are managed and respected cleanly.
         
         Parameters:
         self    -- Model:   the object itself, Required.

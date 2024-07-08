@@ -77,22 +77,24 @@ class TerminalView(mvc.View):
     close(self)
             -- Decommission, deactivate and delete the object,
                override View.close().
-    move(self, distance)
-            -- Move the view coordinates by a distance, Not Implemented.
-    move_to(self, position)
-            -- Move the view coordinates to a position, Not Implemented.
     scale(self, delta)
-            -- scale the view by some delta, Not Implemented.
+            -- Scale the view by some delta, Not Implemented.
     scale_to(self, value)
-            -- scale the view to a value, Not Implemented.
+            -- Scale the view to a value, Not Implemented.
     update(self[, matrix][, flush])
-            -- update and/or draw the matrix, override View.update().
+            -- Update and/or draw the matrix, override View.update().
     _init_colours(self)
-            -- initialize the curses colour pair scheme, Private.
+            -- Initialize the curses colour pair scheme, Private.
     _init_curses(self[, resolution])
-            -- initialize the curses instance, Private.
+            -- Initialize the curses instance, Private.
     _init_field(self[, resolution])
-            -- initialize the border and subwin _canvas, Private.
+            -- Initialize the border and subwin _canvas, Private.
+    
+    Inherits:
+    View.move(self, distance)
+            -- Move the view coordinates by a relative amount or distance.
+    View.move_to(self, position)
+            -- Move the view coordinates to an absolute position.
     
     Warning:
     Any assignment to instance variables or calls to private methods will
@@ -456,9 +458,9 @@ class TerminalController(mvc.Controller):
                     self._view.move((-1, -1))
                 elif key in (curses.KEY_B2, KEY_B2, '5'):  # MIDDLE
                     self._view.move_to((0, 0))
-                else:
-                    sys.stderr.write(
-                            f"{sys.argv[0]}: Unregistered key: {key}\n")
+                #else:
+                #    sys.stderr.write(
+                #            f"{sys.argv[0]}: Unregistered key: {key}\n")
         
         except curses.error:
             pass
