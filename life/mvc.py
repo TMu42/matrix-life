@@ -209,8 +209,9 @@ class View:
         
         Returns None.
         """
-        self._position = (self._position[0] + distance[0],
-                          self._position[1] + distance[1])
+        self._position = \
+                ((self._position[0] + distance[0])%self._matrix.shape[1],
+                 (self._position[1] + distance[1])%self._matrix.shape[0])
         
         self._updates = True
     
