@@ -29,6 +29,8 @@ ONE_B  = 166
 
 RESOLUTION = (1280, 720)
 
+SCALE = 5.2
+
 COLOURS = [(ZERO_R, ZERO_G, ZERO_B), (ONE_R, ONE_G, ONE_B)]
 
 ICON_FILE = "icon.ico"
@@ -69,16 +71,20 @@ class GraphicsView(mvc.View):
     close(self)
             -- Decommission, deactivate and delete the object,
                override View.close().
-    move(self, distance)
-            -- Move the view coordinates by a distance, Not Implemented.
-    move_to(self, position)
-            -- Move the view coordinates to a position, Not Implemented.
     scale(self, delta)
             -- scale the view by some delta, Not Implemented.
     scale_to(self, value)
             -- scale the view to a value, Not Implemented.
     update(self[, matrix][, flush])
             -- update and/or draw the matrix, override View.update().
+    _decorate_window(self[, icon_file][, caption])
+            -- set the window icon and/or caption.
+    
+    Inherits:
+    View.move(self, distance)
+            -- Move the view coordinates by a relative amount or distance.
+    View.move_to(self, position)
+            -- Move the view coordinates to an absolute position.
     
     Warning:
     Any assignment to instance variables or calls to private methods will
@@ -118,6 +124,9 @@ class GraphicsView(mvc.View):
         if resolution is None:
             resolution = RESOLUTION
         
+        if scale is None:
+            scale = SCALE
+        
         self._matrix = None
         self._updates = False
         self._resolution = (resolution[0], resolution[-1])
@@ -128,22 +137,9 @@ class GraphicsView(mvc.View):
         
         pygame.init()
         
-        try:
-            icon = pygame.image.load(icon_file)
-        except (TypeError, FileNotFoundError, pygame.error):
-            try:
-                icon = pygame.image.load(ICON_FILE)
-            except (FileNotFoundError, pygame.error):
-                pass
-            else:
-                pygame.display.set_icon(icon)
-        else:
-            pygame.display.set_icon(icon)
+        pygame.key.set_repeat(300, 30)
         
-        if caption is not None:
-            pygame.display.set_caption(caption)
-        else:
-            pygame.display.set_caption(CAPTION)
+        self._decorate_window(icon_file, caption)
         
         if resolution is not None:
             self._resolution = (resolution[0], resolution[-1])
@@ -157,6 +153,7 @@ class GraphicsView(mvc.View):
                                                    flags=pygame.RESIZABLE)
         
         self._closed = False
+    
     
     def update(self, matrix=None, flush=False):
         """
@@ -197,10 +194,20 @@ class GraphicsView(mvc.View):
             
             surface = pygame.surfarray.make_surface(pixels)
             
-            surface = pygame.transform.scale(surface,
-                                             self._canvas.get_rect()[2:])
+            #surface = pygame.transform.scale(surface,
+            #                                 self._canvas.get_rect()[2:])
             
-            self._canvas.blit(surface, (0, 0))
+            surface = pygame.transform.scale_by(surface, self._scale)
+            
+            for i in range(int(-self._matrix.shape[1]*self._scale),
+                           self._canvas.get_size()[0],
+                           int(self._matrix.shape[1]*self._scale)):
+                for j in range(int(-self._matrix.shape[0]*self._scale),
+                               self._canvas.get_size()[1],
+                               int(self._matrix.shape[0]*self._scale)):
+                    self._canvas.blit(
+                                surface, (self._scale*self._position[0] + i,
+                                          self._scale*self._position[1] + j))
             
             pygame.display.flip()
             
@@ -225,6 +232,34 @@ class GraphicsView(mvc.View):
         pygame.quit()
         
         self._closed = True
+
+
+    def _decorate_window(self, icon_file=None, caption=None):
+        """
+        Set window icon and/or caption text.
+        
+        Set an icon to identify the window and set the window caption text,
+        i.e. the window title.
+        
+        Parameters:
+        self        -- GraphicsView:    the object itself, Required.
+        icon_file   -- str:             path to the icon image, default = None.
+        caption     -- str:             the window title text, default = None.
+        
+        Returns: None.
+        
+        Note: This is a private method, you should not be calling this.
+        """
+        if icon_file is not None:
+            try:
+                icon = pygame.image.load(icon_file)
+            except (TypeError, FileNotFoundError, pygame.error):
+                pass
+            else:
+                pygame.display.set_icon(icon)
+        
+        if caption is not None:
+            pygame.display.set_caption(caption)
 
 
 class GraphicsController(mvc.Controller):
@@ -304,10 +339,27 @@ class GraphicsController(mvc.Controller):
                     self._paused = not self._paused
                 elif event.key in (pygame.K_RETURN, pygame.K_s):
                     self._step = True
-                else:
-                    sys.stderr.write(
-                            f"{sys.argv[0]}: Unregistered key: {event.key}")
-            
+                elif event.key in (pygame.K_UP, pygame.K_KP8):
+                    self._view.move(( 0,  1))
+                elif event.key in (pygame.K_DOWN, pygame.K_KP2):
+                    self._view.move(( 0, -1))
+                elif event.key in (pygame.K_LEFT, pygame.K_KP4):
+                    self._view.move(( 1,  0))
+                elif event.key in (pygame.K_RIGHT, pygame.K_KP6):
+                    self._view.move((-1,  0))
+                elif event.key in (pygame.K_KP7,):   # UP-LEFT
+                    self._view.move(( 1,  1))
+                elif event.key in (pygame.K_KP9,):   # UP-RIGHT
+                    self._view.move((-1,  1))
+                elif event.key in (pygame.K_KP1,):   # DOWN-LEFT
+                    self._view.move(( 1, -1))
+                elif event.key in (pygame.K_KP3,):   # DOWN-RIGHT
+                    self._view.move((-1, -1))
+                elif event.key in (pygame.K_KP5,):   # MIDDLE
+                    self._view.move_to((0, 0))
+                #else:
+                #    sys.stderr.write(
+                #            f"{sys.argv[0]}: Unregistered key: {event.key}\n")
             elif event.type == pygame.WINDOWMINIMIZED:
                 self._paused = True
 

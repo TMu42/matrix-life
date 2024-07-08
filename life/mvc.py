@@ -197,7 +197,7 @@ class View:
     
     def move(self, distance):
         """
-        Move the view coordinates by a relative amount or distance, Abstract.
+        Move the view coordinates by a relative amount or distance.
         
         This method adjusts the View object's internal position value and is
         primarily useful for panning on automata which are larger than the
@@ -208,15 +208,16 @@ class View:
         distance    -- tuple:   the x, y distance to move, Required.
         
         Returns None.
-        
-        Exceptions Raised:
-        NotImplementedError -- always.
         """
-        raise NotImplementedError
+        self._position = \
+                ((self._position[0] + distance[0])%self._matrix.shape[1],
+                 (self._position[1] + distance[1])%self._matrix.shape[0])
+        
+        self._updates = True
     
     def move_to(self, position):
         """
-        Move the view coordinates to an absolute position, Abstract.
+        Move the view coordinates to an absolute position.
         
         This method adjusts the View object's internal position value and is
         primarily useful for panning on automata which are larger than the
@@ -227,11 +228,10 @@ class View:
         position    -- tuple:   the x, y coordinates to move to, Required.
         
         Returns None.
-        
-        Exceptions Raised:
-        NotImplementedError -- always.
         """
-        raise NotImplementedError
+        self._position = position
+        
+        self._updates = True
     
     def scale(self, delta):
         """
@@ -274,10 +274,9 @@ class View:
         """
         Decommission, deactivate and delete the object permanently.
         
-        This is the only non-abstract method in this class and provides basic
-        decommissioning however subclasses implementing this may need to
-        override or extend this to ensure that memory and state are managed
-        and respected cleanly.
+        This non-abstract method provides basic decommissioning however
+        subclasses implementing this may need to override or extend this to
+        ensure that memory and state are managed and respected cleanly.
         
         Parameters:
         self    -- Model:   the object itself, Required.
@@ -446,13 +445,13 @@ class Controller:
                 
                 if self._model is not None and self._running \
                 and ((not self._paused) or self._step
-                     or self._model._steps == 0):
+                     or self._model._steps == 0): ### WARNING Private! Fix...
                     self._model.step()
                     
                     self._step = False
-                    
-                    if self._view is not None:
-                        self._view.update(self._model._mat, True)
+                
+                if self._view is not None and self._running:
+                    self._view.update(self._model._mat, True)
                 
                 if not self._paused:
                     time.sleep(self._delay)

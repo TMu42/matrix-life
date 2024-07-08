@@ -33,6 +33,18 @@ ONE_DEFAULTS  = [49, 14, 6]
 
 RESOLUTION = None   #(132, 32)
 
+SCALE = 1
+
+# Curses constants seem to be incorrect so we provide these alternatives,
+# these may not be very cross-platform compatible as they were detected
+# empirically.
+KEY_A1 = 262
+KEY_A3 = 339
+KEY_B2 = 591
+KEY_C1 = 360
+KEY_C3 = 338
+
+
 
 class TerminalView(mvc.View):
     """
@@ -65,22 +77,24 @@ class TerminalView(mvc.View):
     close(self)
             -- Decommission, deactivate and delete the object,
                override View.close().
-    move(self, distance)
-            -- Move the view coordinates by a distance, Not Implemented.
-    move_to(self, position)
-            -- Move the view coordinates to a position, Not Implemented.
     scale(self, delta)
-            -- scale the view by some delta, Not Implemented.
+            -- Scale the view by some delta, Not Implemented.
     scale_to(self, value)
-            -- scale the view to a value, Not Implemented.
+            -- Scale the view to a value, Not Implemented.
     update(self[, matrix][, flush])
-            -- update and/or draw the matrix, override View.update().
+            -- Update and/or draw the matrix, override View.update().
     _init_colours(self)
-            -- initialize the curses colour pair scheme, Private.
+            -- Initialize the curses colour pair scheme, Private.
     _init_curses(self[, resolution])
-            -- initialize the curses instance, Private.
+            -- Initialize the curses instance, Private.
     _init_field(self[, resolution])
-            -- initialize the border and subwin _canvas, Private.
+            -- Initialize the border and subwin _canvas, Private.
+    
+    Inherits:
+    View.move(self, distance)
+            -- Move the view coordinates by a relative amount or distance.
+    View.move_to(self, position)
+            -- Move the view coordinates to an absolute position.
     
     Warning:
     Any assignment to instance variables or calls to private methods will
@@ -88,7 +102,7 @@ class TerminalView(mvc.View):
     state or worse, render the terminal unusable.
     """
     
-    def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
+    def __init__(self, resolution=None, scale=None, position=(0, 0),
                        colours=COLOURS, **kwargs):
         """
         Initialize TerminalView object.
@@ -113,8 +127,15 @@ class TerminalView(mvc.View):
         
         Returns: None.
         """
+        if resolution is None:
+            resolution = RESOLUTION
+        
+        if scale is None:
+            scale = SCALE
+        
         self._matrix = None
         self._updates = False
+        self._resolution = resolution
         self._scale = scale
         self._position = position
         self._colours = colours
@@ -155,10 +176,14 @@ class TerminalView(mvc.View):
             _w = len(self._matrix[0])
             _h = len(self._matrix)
             
+            _x = self._position[0]%_w
+            _y = self._position[1]%_h
+            
             for i in range(self._resolution[1]):
                 for j in range(self._resolution[0]):
                     # = "\x1B[38;2;255;0;0m"
-                    s = ('█' if self._matrix[i%_h, j%_w] else ' ')
+                    s = ('█' if self._matrix[(i - _y)%_h, (j - _x)%_w] \
+                    else ' ')
                     # + "\x1B[39;49m"
                     
                     if j == self._resolution[0] - 1:
@@ -415,8 +440,27 @@ class TerminalController(mvc.Controller):
                     self._paused = not self._paused
                 elif key in ('\r', '\n', 's', 'S'):
                     self._step = True
-                else:
-                    sys.stderr.write(f"{sys.argv[0]}: Unregistered key: {key}")
+                elif key in (curses.KEY_UP, '8'):
+                    self._view.move(( 0,  1))
+                elif key in (curses.KEY_DOWN, '2'):
+                    self._view.move(( 0, -1))
+                elif key in (curses.KEY_LEFT, '4'):
+                    self._view.move(( 1,  0))
+                elif key in (curses.KEY_RIGHT, '6'):
+                    self._view.move((-1,  0))
+                elif key in (curses.KEY_A1, KEY_A1, '7'):  # UP-LEFT
+                    self._view.move(( 1,  1))
+                elif key in (curses.KEY_A3, KEY_A3, '9'):  # UP-RIGHT
+                    self._view.move((-1,  1))
+                elif key in (curses.KEY_C1, KEY_C1, '1'):  # DOWN-LEFT
+                    self._view.move(( 1, -1))
+                elif key in (curses.KEY_C3, KEY_C3, '3'):  # DOWN-LEFT
+                    self._view.move((-1, -1))
+                elif key in (curses.KEY_B2, KEY_B2, '5'):  # MIDDLE
+                    self._view.move_to((0, 0))
+                #else:
+                #    sys.stderr.write(
+                #            f"{sys.argv[0]}: Unregistered key: {key}\n")
         
         except curses.error:
             pass
