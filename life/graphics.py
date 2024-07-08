@@ -128,6 +128,8 @@ class GraphicsView(mvc.View):
         
         pygame.init()
         
+        pygame.key.set_repeat(300, 30)
+        
         try:
             icon = pygame.image.load(icon_file)
         except (TypeError, FileNotFoundError, pygame.error):
@@ -304,9 +306,9 @@ class GraphicsController(mvc.Controller):
                     self._paused = not self._paused
                 elif event.key in (pygame.K_RETURN, pygame.K_s):
                     self._step = True
-                else:
-                    sys.stderr.write(
-                            f"{sys.argv[0]}: Unregistered key: {event.key}")
+                #else:
+                #    sys.stderr.write(
+                #            f"{sys.argv[0]}: Unregistered key: {event.key}")
             
             elif event.type == pygame.WINDOWMINIMIZED:
                 self._paused = True

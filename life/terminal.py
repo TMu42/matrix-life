@@ -415,8 +415,9 @@ class TerminalController(mvc.Controller):
                     self._paused = not self._paused
                 elif key in ('\r', '\n', 's', 'S'):
                     self._step = True
-                else:
-                    sys.stderr.write(f"{sys.argv[0]}: Unregistered key: {key}")
+                #else:
+                #    sys.stderr.write(
+                #            f"{sys.argv[0]}: Unregistered key: {key}")
         
         except curses.error:
             pass
