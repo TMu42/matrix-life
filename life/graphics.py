@@ -360,7 +360,6 @@ class GraphicsController(mvc.Controller):
                 #else:
                 #    sys.stderr.write(
                 #            f"{sys.argv[0]}: Unregistered key: {event.key}\n")
-            
             elif event.type == pygame.WINDOWMINIMIZED:
                 self._paused = True
 

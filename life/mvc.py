@@ -449,7 +449,7 @@ class Controller:
                     self._model.step()
                     
                     self._step = False
-                    
+                
                 if self._view is not None and self._running:
                     self._view.update(self._model._mat, True)
                 
