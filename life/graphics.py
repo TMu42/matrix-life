@@ -29,6 +29,8 @@ ONE_B  = 166
 
 RESOLUTION = (1280, 720)
 
+SCALE = 5
+
 COLOURS = [(ZERO_R, ZERO_G, ZERO_B), (ONE_R, ONE_G, ONE_B)]
 
 ICON_FILE = "icon.ico"
@@ -118,6 +120,9 @@ class GraphicsView(mvc.View):
         if resolution is None:
             resolution = RESOLUTION
         
+        if scale is None:
+            scale = SCALE
+        
         self._matrix = None
         self._updates = False
         self._resolution = (resolution[0], resolution[-1])
@@ -130,6 +135,23 @@ class GraphicsView(mvc.View):
         
         pygame.key.set_repeat(300, 30)
         
+        self._decorate_window(icon_file, caption)
+        
+        if resolution is not None:
+            self._resolution = (resolution[0], resolution[-1])
+        else:
+            self._resolution = RESOLUTION
+        
+        if fullscreen:
+            self._canvas = pygame.display.set_mode(flags=pygame.FULLSCREEN)
+        else:
+            self._canvas = pygame.display.set_mode(self._resolution,
+                                                   flags=pygame.RESIZABLE)
+        
+        self._closed = False
+
+
+    def _decorate_window(self, icon_file=ICON_FILE, caption=CAPTION):
         try:
             icon = pygame.image.load(icon_file)
         except (TypeError, FileNotFoundError, pygame.error):
@@ -146,19 +168,7 @@ class GraphicsView(mvc.View):
             pygame.display.set_caption(caption)
         else:
             pygame.display.set_caption(CAPTION)
-        
-        if resolution is not None:
-            self._resolution = (resolution[0], resolution[-1])
-        else:
-            self._resolution = RESOLUTION
-        
-        if fullscreen:
-            self._canvas = pygame.display.set_mode(flags=pygame.FULLSCREEN)
-        else:
-            self._canvas = pygame.display.set_mode(self._resolution,
-                                                   flags=pygame.RESIZABLE)
-        
-        self._closed = False
+    
     
     def update(self, matrix=None, flush=False):
         """
@@ -308,7 +318,7 @@ class GraphicsController(mvc.Controller):
                     self._step = True
                 #else:
                 #    sys.stderr.write(
-                #            f"{sys.argv[0]}: Unregistered key: {event.key}")
+                #            f"{sys.argv[0]}: Unregistered key: {event.key}\n")
             
             elif event.type == pygame.WINDOWMINIMIZED:
                 self._paused = True

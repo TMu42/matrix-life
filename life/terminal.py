@@ -33,6 +33,8 @@ ONE_DEFAULTS  = [49, 14, 6]
 
 RESOLUTION = None   #(132, 32)
 
+SCALE = 1
+
 
 class TerminalView(mvc.View):
     """
@@ -88,7 +90,7 @@ class TerminalView(mvc.View):
     state or worse, render the terminal unusable.
     """
     
-    def __init__(self, resolution=RESOLUTION, scale=None, position=(0, 0),
+    def __init__(self, resolution=None, scale=None, position=(0, 0),
                        colours=COLOURS, **kwargs):
         """
         Initialize TerminalView object.
@@ -113,8 +115,15 @@ class TerminalView(mvc.View):
         
         Returns: None.
         """
+        if resolution is None:
+            resolution = RESOLUTION
+        
+        if scale is None:
+            scale = SCALE
+        
         self._matrix = None
         self._updates = False
+        self._resolution = resolution
         self._scale = scale
         self._position = position
         self._colours = colours
@@ -155,10 +164,14 @@ class TerminalView(mvc.View):
             _w = len(self._matrix[0])
             _h = len(self._matrix)
             
+            _x = self._position[0]%_w
+            _y = self._position[1]%_h
+            
             for i in range(self._resolution[1]):
                 for j in range(self._resolution[0]):
                     # = "\x1B[38;2;255;0;0m"
-                    s = ('█' if self._matrix[i%_h, j%_w] else ' ')
+                    s = ('█' if self._matrix[(i - _y)%_h, (j - _x)%_w] \
+                    else ' ')
                     # + "\x1B[39;49m"
                     
                     if j == self._resolution[0] - 1:
@@ -415,9 +428,17 @@ class TerminalController(mvc.Controller):
                     self._paused = not self._paused
                 elif key in ('\r', '\n', 's', 'S'):
                     self._step = True
-                #else:
-                #    sys.stderr.write(
-                #            f"{sys.argv[0]}: Unregistered key: {key}")
+                elif key == curses.KEY_UP:
+                    self._view.move(( 0,  1))
+                elif key == curses.KEY_DOWN:
+                    self._view.move(( 0, -1))
+                elif key == curses.KEY_LEFT:
+                    self._view.move(( 1,  0))
+                elif key == curses.KEY_RIGHT:
+                    self._view.move((-1,  0))
+                else:
+                    sys.stderr.write(
+                            f"{sys.argv[0]}: Unregistered key: {key}\n")
         
         except curses.error:
             pass
