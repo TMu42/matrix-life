@@ -33,9 +33,9 @@ This repository implements a [Linear Algebra](https://en.wikipedia.org/wiki/Line
                                          "terminal" or "graphical", or accepted aliases/
                                          abbreviations for these.
 
-                                 -p, --paused (Ignored)
+                                 -p, --paused
                                          Start Conway's Game of Life in paused mode. To
-                                         toggle pause during execution, tap 'p'.
+                                         toggle pause during execution, tap 'p' or SPACE.
 
                                  -q, --quiet (Ignored)
                                          Decrease the verbosity of accompanying information
@@ -54,6 +54,8 @@ This repository implements a [Linear Algebra](https://en.wikipedia.org/wiki/Line
                                          Increase the verbosity of accompanying information
                                          to output for each instance of flag.
     
+    arguments.py    -    CLI argument handling with argparse
+    
     icon.ico            -    Favicon style icon file for graphics mode window.
     
     requirements.txt    -    Dependency list for this repository, install into virtual environment
@@ -63,11 +65,11 @@ This repository implements a [Linear Algebra](https://en.wikipedia.org/wiki/Line
     
     README.md           -    This README file
 
+    LICENSE             -    Statement of copyright
+
 ### matrix-life/life/
     
     __init__.py     -    Initiation file for package life
-    
-    arguments.py    -    CLI argument handling with argparse
     
     graphics.py     -    View and Controller classes for graphical output handling with PyGame
 
