@@ -99,7 +99,8 @@ def _initialize(argv):
     view = VIEWS[args.outmode](resolution=args.resolution,
                                fullscreen=args.fullscreen)
     
-    controller = CONTROLLERS[args.outmode](model, view, args.delay)
+    controller = CONTROLLERS[args.outmode](model, view, args.delay,
+                                                        args.paused)
     
     return controller
 
