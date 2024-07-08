@@ -28,7 +28,6 @@ scip        -- A package providing Model objects for Conway's Game of Life
 """
 
 # Modules
-from . import arguments
 from . import terminal
 from . import graphics
 from . import utils

@@ -47,7 +47,7 @@ import sys
 
 import life
 
-import life.arguments as arg
+import arguments as arg
 
 
 # Algorithm Analytics:
