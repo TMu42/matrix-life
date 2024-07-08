@@ -354,6 +354,7 @@ class Controller:
             
             self._running = True
             self._paused  = paused
+            self._step    = False
             self._closed  = False
     
     def connect_model(self, model):
@@ -444,8 +445,11 @@ class Controller:
                 self.handle_events()
                 
                 if self._model is not None and self._running \
-                        and (not self._paused or self._model._steps == 0):
+                and ((not self._paused) or self._step
+                     or self._model._steps == 0):
                     self._model.step()
+                    
+                    self._step = False
                     
                     if self._view is not None:
                         self._view.update(self._model._mat, True)
