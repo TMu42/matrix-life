@@ -10,6 +10,7 @@ GraphicsView        -- A View for graphical rendering of cellular automata.
 GraphicsController  -- A Controller to pair with a GraphicsView object.
 """
 
+import sys
 import numpy
 
 from . import utils
@@ -299,7 +300,23 @@ class GraphicsController(mvc.Controller):
             elif event.type == pygame.KEYDOWN:
                 if event.key in (pygame.K_ESCAPE, pygame.K_q):
                     self._running = False
-                elif event.key == pygame.K_p:
+                elif event.key in (pygame.K_SPACE, pygame.K_p):
                     self._paused = not self._paused
+                elif event.key in (pygame.K_RETURN, pygame.K_s):
+                    self._step = True
+                else:
+                    sys.stderr.write(
+                            f"{sys.argv[0]}: Unregistered key: {event.key}")
+            
             elif event.type == pygame.WINDOWMINIMIZED:
                 self._paused = True
+
+
+
+
+
+
+
+
+
+################## END OF FILE ############################

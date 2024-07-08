@@ -411,8 +411,13 @@ class TerminalController(mvc.Controller):
                 
                 if key in ('\x1b', 'q', 'Q'):
                     self._running = False
-                elif key in ('p', 'P'):
+                elif key in (' ', 'p', 'P'):
                     self._paused = not self._paused
+                elif key in ('\r', '\n', 's', 'S'):
+                    self._step = True
+                else:
+                    sys.stderr.write(f"{sys.argv[0]}: Unregistered key: {key}")
+        
         except curses.error:
             pass
 
@@ -429,3 +434,7 @@ class TerminalController(mvc.Controller):
 #        info_lines += 1
 #    
 #    return info_lines
+
+
+
+################## END OF FILE ############################
