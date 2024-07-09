@@ -23,6 +23,8 @@ _normalize_verbose_quiet(args)
                 -- preprocess the verbose and quiet options, Private.
 _normalize_size_resolution(args)
                 -- preprocess the size and resolution options, Private.
+_normalize_colours(args)
+                -- preprocess colours option, Private.
 """
 
 import argparse
@@ -79,7 +81,7 @@ def get_args(argv):
     """
     args = _get_raw_args(argv)
     
-#    _normalize_verbose_quiet(args)
+    _normalize_verbose_quiet(args)
     
     _normalize_size_resolution(args)
     
@@ -122,6 +124,8 @@ def _get_raw_args(args):
     
     parser.add_argument('-p', "--paused",     action="store_true")
     parser.add_argument('-F', "--fullscreen", action="store_true")
+    
+    parser.add_argument('-C', "--colours", "--colors", nargs='+')
     
     return parser.parse_args(args=args[1:])
 
@@ -180,3 +184,80 @@ def _normalize_size_resolution(args):
         args.size = (args.size[0], args.size[-1])
     if args.resolution is not None:
         args.resolution = (args.resolution[0], args.resolution[-1])
+
+
+def _normalize_colours(args):
+    """
+    Preprocess the colours option.
+    
+    -C is a  multiple argument option on the ArgumentParser. -C should resolve
+    to a list of [bg_colour, fg_colour] or [colour_0, colour_1...colour_<n>]
+    where each colour is itself either a single number (for palette or
+    greyscale) or a tuple or (red, green, blue). "Sensible" behaviour is:
+    Provide a language for specifying colours, accept the following keywords:
+    
+        "fg",       -- Everything that follows should be treated as specifying
+        "bg",          fg_colour, bg_colour, colour_<n> until the next keyword
+        "col<n>"       from this group. If these keywords are used, the first
+                       argument should be one of these keywords and EVERY
+                       colour must be specified with one of these keywords.
+                       Values preceeding the first of these yield undefined
+                       behaviour. Duplicate colour specifications also yeild'
+                       undefined behaviour. Note: "bg" is a synonym for "col0"
+                       and "fg" is a synonym for "col1". If these keywords are
+                       not present, colours are read as an ordered list
+                       starting with col0 (bg).
+        
+        "rgb",      -- The following 3, 4 numbers (range 0-255) should be
+        "rgba"         treated as an rgb, rgba colour. If fewer than 3, 4
+                       numbers are parsable, behaviour is undefined. If more
+                       values are present, additional values are read as
+                       seperate groups per behaviour below.
+        
+        "grey"      -- The following number should be treated as a greyscale
+                       value (range 0-255). If there is no parsable number,
+                       behaviour is undefined. If more values are present,
+                       additional values are read as seperate groups per
+                       behaviour below.
+
+        "pal"       -- The following number should be treated as a palette
+                       code (any range). If there is no parsable number,
+                       behaviour is undefined. If more values are present,
+                       additional values are read as seperate groups per
+                       behaviour below.
+    
+    Values not preceeded by a keyword specifying the interpretation of the
+    numbers are grouped in threes and read as rgb values if their quantity is
+    a multiple of three, otherwise they are treated as singlets which may be
+    interpreted as greyscale or pallette depending on View implementation.
+    Values following the required group of a keyword are also treated as
+    seperate lists however they will be assumed to follow the same format as
+    the keyword they follow with additional values interpreted as singlets.
+    Examples:
+    
+        `-C 7 5 3`                      --> [rgb(7,5,3), None].
+        `-C 28 8`                       --> [28, 8].
+        `-C grey 127 63 31`             --> [grey(127), grey(63), grey(31)].
+        `-C rgb 255 127 63 63 127 255`  --> [rgb(255,127,63), rgb(63,127,255)].
+        `-C rgb 99 88 77 pal 5`         --> [rgb(99,88,77), pal(5)].
+        `-C rgb 99 88 77 5`             --> [rgb(99,88,77), 5].
+        `-C fg 100 50 25 bg 90 60 30`   --> [rgb(90,60,30), rgb(100,50,25)].
+        `-C fg 9`                       --> [None, 9].
+        `-C col2 100 bg 6`              --> [6, None, 100].
+        
+    
+    Parameters:
+    args    -- Namespace:   the object out of argparse, Required.
+    
+    Returns: None.
+    
+    Note: This is a private function, you should not be calling this.
+    """
+    
+
+
+
+
+
+
+################## END OF FILE ############################
