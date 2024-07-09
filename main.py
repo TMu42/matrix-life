@@ -11,6 +11,15 @@ Options:
         may be any of: "numpy-roll", "numpy-matmul", "scipy-matmul" or
         "scipy-convolve", or accepted aliases/abbreviations for these.
     
+    -C, --colours [(fg|bg|col<n>) ][(rgb|rgba|grey|pal) ]VALUE_0 \
+                  [[(fg|bg|col<n>) ][(rgb|rgba|grey|pal) ]VALUE_1[ ...]]
+        Set the display colours as an rgb, rgba, greyscale or colour palette
+        value. Colours are read in the order entered (unless "fg", "bg",
+        "col<n>" specifiers are used) and are zero-based such that the <n>th
+        colour applies to a cellular value of <n>. "fg" and "bg" are alias for
+        "col1" and "col0" respectively. Colour availability varies by output
+        mode and the system capabilities.
+    
     -d, --delay=NUMBER
         Set the delay interval between iterations, 0 for no delay. NUMBER is
         in seconds but may take floating point values.
@@ -22,7 +31,7 @@ Options:
         Select the output mode. OUTMODE may be either "terminal" or
         "graphical", or accepted aliases/abbreviations for these.
     
-    -p, --paused (Ignored)
+    -p, --paused
         Start Conway's Game of Life in paused mode. To toggle pause during
         execution, tap 'p'.
     

@@ -25,13 +25,15 @@ _normalize_size_resolution(args)
                 -- preprocess the size and resolution options, Private.
 _normalize_colours(args)
                 -- preprocess colours option, Private.
+_add_colours(colour_map, colour_num, mode, values)
+                -- add colours to a colour map
 """
 
 import argparse
 
 
-WIDTH  =  96
-HEIGHT =  54
+WIDTH  =  64
+HEIGHT =  48
 
 DELAY = 0.05
 
@@ -84,6 +86,8 @@ def get_args(argv):
     _normalize_verbose_quiet(args)
     
     _normalize_size_resolution(args)
+    
+    _normalize_colours(args)
     
     return args
 
@@ -243,8 +247,10 @@ def _normalize_colours(args):
         `-C rgb 99 88 77 5`             --> [rgb(99,88,77), 5].
         `-C fg 100 50 25 bg 90 60 30`   --> [rgb(90,60,30), rgb(100,50,25)].
         `-C fg 9`                       --> [None, 9].
-        `-C col2 100 bg 6`              --> [6, None, 100].
-        
+        `-C col2 grey 100 bg pal 6`     --> [pal(6), None, grey(100)].
+    
+    The availability of any given colour system or how it should be handled is
+    up to the specification of the invoked View object.
     
     Parameters:
     args    -- Namespace:   the object out of argparse, Required.
@@ -253,8 +259,120 @@ def _normalize_colours(args):
     
     Note: This is a private function, you should not be calling this.
     """
+    colour_map = {}
     
+    colour_num = 0
+    
+    mode = None
+    
+    values = []
+    
+    for word in args.colours + [None]:
+        try:
+            n = int(word)
+        except TypeError:
+            _add_colours(colour_map, colour_num, mode, values)
+        except ValueError:
+            colour_num += _add_colours(colour_map, colour_num, mode, values)
+            
+            values = []
+            
+            mode = None
+            
+            if word == "bg":
+                colour_num = 0
+                
+                mode = "greedy"
+            elif word == "fg":
+                colour_num = 1
+                
+                mode = "greedy"
+            elif word[:3] == "col":
+                try:
+                    colour_num = int(word[3:])
+                except ValueError:
+                    raise ValueError(
+                                f"{word} is not a valid keyword or integer.")
+                
+                mode = "greedy"
+            elif word in ("rgb", "rgba", "grey", "pal"):
+                mode = word
+            else:
+                raise ValueError(f"{word} is not a valid keyword or integer.")
+        else:
+            values += [n]
+    
+    args.colours = colour_map
 
+
+def _add_colours(colour_map, colour_num, mode, values):
+    """
+    Add colours to a colour map.
+    
+    Helper function for _normalize_colours(), add a list of values as colours,
+    interpreted based on the mode value, starting from colour_number.
+    
+    Parameters:
+    colour_mop  -- dict:    the colour map, Required.
+    colour_num  -- int:     the number of the (first) colour to add, Required.
+    mode        -- str:     the mode indicator, one of: "rgba", "rgb", "grey",
+                            "pal" or None, Required.
+    values      -- list:    a list of ints to process into colours, Required.
+    
+    Returns: int    -- the number of colours added to colour_map.
+    
+    Note: This is a private function, you should not be calling this.
+    """
+    start_index = colour_num
+    
+    if mode is None and (len(values)%3 == 0):
+        mode = "rgb"
+    elif mode == "greedy":
+        if len(values) >= 3 and ((len(values)%3 == 0) or
+                                 (len(values)%4 != 0)):
+            mode = "rgb"
+        elif len(values) >= 4:
+            mode = "rgba"
+        else:
+            mode = None
+    
+    if mode == "rgba":
+        while len(values) >= 4:
+            colour_map[colour_num] = tuple(["rgba"] + values[:4])
+            
+            values = values[4:]
+            
+            colour_num += 1
+        
+        while len(values) != 0:
+            colour_map[colour_num] = tuple([None, values[0]])
+            
+            values = values[1:]
+            
+            colour_num += 1
+    elif mode == "rgb":
+        while len(values) >= 3:
+            colour_map[colour_num] = tuple(["rgb"] + values[:3])
+            
+            values = values[3:]
+            
+            colour_num += 1
+        
+        while len(values) != 0:
+            colour_map[colour_num] = tuple([None, values[0]])
+            
+            values = values[1:]
+            
+            colour_num += 1
+    else:
+        while len(values) != 0:
+            colour_map[colour_num] = tuple([mode, values[0]])
+            
+            values = values[1:]
+            
+            colour_num += 1
+    
+    return colour_num - start_index
 
 
 
