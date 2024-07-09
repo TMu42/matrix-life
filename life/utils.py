@@ -56,3 +56,13 @@ def silent_import(*entities, noexcept=False, warn=True):
         sys.stdout = sys.__stdout__
         
         return imported
+
+
+def get_index(collection, index):
+    """
+    To-Do: Write docstring...
+    """
+    try:
+        return collection[index]
+    except (KeyError, IndexError):
+        return None

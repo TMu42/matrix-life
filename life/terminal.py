@@ -16,6 +16,8 @@ import curses
 
 from . import mvc
 
+from . import utils
+
 
 ZERO_R  = 121
 ZERO_G  =   4
@@ -308,8 +310,18 @@ class TerminalView(mvc.View):
             return
         
         if curses.can_change_color():
-            curses.init_color(bg, *self._colours[0])#ZERO_R, ZERO_G, ZERO_B)
-            curses.init_color(fg, *self._colours[1])# ONE_R,  ONE_G,  ONE_B)
+            try:
+                c0 = self._colours[0][1:]
+            except (KeyError, IndexError):
+                c0 = COLOURS[0]
+            
+            try:
+                c1 = self._colours[1][1:]
+            except (KeyError, IndexError):
+                c1 = COLOURS[1]
+            
+            curses.init_color(bg, *c0)  #ZERO_R, ZERO_G, ZERO_B)
+            curses.init_color(fg, *c1)  # ONE_R,  ONE_G,  ONE_B)
         
         curses.init_pair(1, fg, bg)
         
