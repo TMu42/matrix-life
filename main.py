@@ -107,6 +107,7 @@ def _initialize(argv):
     
     view = VIEWS[args.outmode](resolution=args.resolution,
                                fullscreen=args.fullscreen,
+                               colours=args.colours,
                                caption="I didn't choose the Matrix Life...")
     
     controller = CONTROLLERS[args.outmode](model, view, args.delay,

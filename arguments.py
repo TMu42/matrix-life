@@ -37,7 +37,7 @@ HEIGHT =  48
 
 DELAY = 0.05
 
-DEFAULT   = ["default", "def", "deflt", "dflt", 'd']
+DEFAULT = ["default", "def", "deflt", "dflt", 'd']
 
 NP_MATMUL   = ["numpy-matmul","np-matmul", "n-matmul", "nm",
                "numpy", "np", 'n']
@@ -259,6 +259,11 @@ def _normalize_colours(args):
     
     Note: This is a private function, you should not be calling this.
     """
+    if args.colours is None:
+        args.colours = [None, None]
+        
+        return
+    
     colour_map = {}
     
     colour_num = 0

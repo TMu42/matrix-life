@@ -132,8 +132,23 @@ class GraphicsView(mvc.View):
         self._resolution = (resolution[0], resolution[-1])
         self._scale = scale
         self._position = position
-        self._colours = colours
         self._fullscreen = fullscreen
+        
+        if colours is None:
+            self._colours = COLOURS
+        else:
+            try:
+                c0 = colours[0]
+            except KeyError:
+                c0 = None
+            
+            try:
+                c1 = colours[1]
+            except KeyError:
+                c1 = None
+            
+            self._colours = [self._rgb_col(c0, COLOURS[0]),
+                             self._rgb_col(c1, COLOURS[1])]
         
         pygame.init()
         
@@ -183,12 +198,15 @@ class GraphicsView(mvc.View):
             self._updates = True
         
         if flush and self._updates:
-            r_pixels = (ONE_R - ZERO_R) \
-                      *numpy.atleast_3d(self._matrix.T) + ZERO_R
-            g_pixels = (ONE_G - ZERO_G) \
-                      *numpy.atleast_3d(self._matrix.T) + ZERO_G
-            b_pixels = (ONE_B - ZERO_B) \
-                      *numpy.atleast_3d(self._matrix.T) + ZERO_B
+            zero_r, zero_g, zero_b = self._colours[0]
+            one_r,  one_g,  one_b  = self._colours[1]
+            
+            r_pixels = (one_r - zero_r) \
+                      *numpy.atleast_3d(self._matrix.T) + zero_r
+            g_pixels = (one_g - zero_g) \
+                      *numpy.atleast_3d(self._matrix.T) + zero_g
+            b_pixels = (one_b - zero_b) \
+                      *numpy.atleast_3d(self._matrix.T) + zero_b
             
             pixels = numpy.concatenate((r_pixels, g_pixels, b_pixels), axis=2)
             
@@ -260,6 +278,26 @@ class GraphicsView(mvc.View):
         
         if caption is not None:
             pygame.display.set_caption(caption)
+    
+    
+    @staticmethod
+    def _rgb_col(colour, default=COLOURS[1]):
+        """
+        To-Do: Write docstring...
+        """
+        if colour is None or type(colour) is not tuple:
+            return default
+        
+        if colour[0] in ("rgb", "rgba"):
+            return tuple(colour[1:4])
+        
+        if colour[0] in (None, "grey"):
+            return tuple(3*colour[1:2])
+        
+        if colour[0] == "pal":
+            return (255*bool(colour[1]),
+                    255*bool(colour[1]),
+                    255*bool(colour[1]))
 
 
 class GraphicsController(mvc.Controller):
