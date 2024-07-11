@@ -19,15 +19,15 @@ from . import mvc
 from . import utils
 
 
-ZERO_R  = 121
-ZERO_G  =   4
-ZERO_B  = 180
+ZERO_R =  31 #121 #/1000
+ZERO_G =   1 #  4
+ZERO_B =  46 #180
 
-ONE_R = 113
-ONE_G = 805
-ONE_B = 648
+ONE_R =  29 #113
+ONE_G = 206 #805
+ONE_B = 166 #648
 
-COLOURS = [(ZERO_R, ZERO_G, ZERO_B), (ONE_R, ONE_G, ONE_B)]
+COLOURS = [("rgb", ZERO_R, ZERO_G, ZERO_B), ("rgb", ONE_R, ONE_G, ONE_B)]
 
 ZERO_DEFAULTS = [55, 17, 0]
 ONE_DEFAULTS  = [49, 14, 6]
@@ -292,15 +292,15 @@ class TerminalView(mvc.View):
         """
         fg, bg = None, None
         
-        for col in ZERO_DEFAULTS:
-            if col < curses.COLORS:
-                bg = col
+        for colour in ZERO_DEFAULTS:
+            if colour < curses.COLORS:
+                bg = colour
                 
                 break
         
-        for col in ONE_DEFAULTS:
-            if col < curses.COLORS:
-                fg = col
+        for colour in ONE_DEFAULTS:
+            if colour < curses.COLORS:
+                fg = colour
                 
                 break
         
@@ -309,16 +309,16 @@ class TerminalView(mvc.View):
             
             return
         
-        if curses.can_change_color():
-            try:
-                c0 = self._colours[0][1:]
-            except (KeyError, IndexError):
-                c0 = COLOURS[0]
-            
-            try:
-                c1 = self._colours[1][1:]
-            except (KeyError, IndexError):
-                c1 = COLOURS[1]
+#        if curses.can_change_color():
+#            try:
+#                c0 = self._colours[0][1:]
+#            except (KeyError, IndexError):
+#                c0 = COLOURS[0]
+#            
+#            try:
+#                c1 = self._colours[1][1:]
+#            except (KeyError, IndexError):
+#                c1 = COLOURS[1]
             
             curses.init_color(bg, *c0)  #ZERO_R, ZERO_G, ZERO_B)
             curses.init_color(fg, *c1)  # ONE_R,  ONE_G,  ONE_B)
@@ -326,6 +326,87 @@ class TerminalView(mvc.View):
         curses.init_pair(1, fg, bg)
         
         self._colour_pair = 1
+    
+    
+    @staticmethod
+    def _rgb_col(colour, default=COLOURS[1]):
+        """
+        To-Do: Write docstring...
+        """
+        if colour is None or type(colour) is not tuple:
+            colour = default
+        
+        if colour[0] in ("rgb", "rgba"):
+            return tuple([c*1000//256 for c in colour[1:4]])
+        
+        if colour[0] in (None, "grey"):
+            return tuple(3*[1000*colour[1]//256])
+        
+        if colour[0] == "pal":  # Will address the terminal/curses palette
+            return None
+    
+    
+    @staticmethod
+    def _pal_col(colour, default=COLOURS[1]):
+        """
+        To-Do: Write docstring...
+        """
+        if colour is None or type(colour) is not tuple:
+            colour = default
+        
+        # RGB -> ANSI-256:
+        #   r', g', b' = r*6//256, g*6//256, b*6//256 ; i.e. [0->255] -> [0->5]
+        #
+        # pal256 = 16 + 36*r' + 6*g' + 1*b'
+        
+        # RGB -> ANSI-8:
+        #   r8, g8, b8 = r//128, g//128, b//128 ; i.e. [0-255] -> [0->1]
+        #
+        # pal8 = 4*b8 + 2*g8 + r8
+        
+        # RGB -> ANSI-16:
+        #   if   pal8 == 0 and r + g + b >= 192 then pal16 = 8
+        #   elif pal8 == 7 then
+        #       r16, g16, b16 = (r - 128)//64, (g - 128)//64, (b - 128)//64
+        #       ; i.e. [128->255] -> [0->1]
+        #       pal16 = 8 + 4*b16 + 2*g16 + r16
+        #       if pal16 == 8 then pal16 = 7
+        #   else then pal16 = pal8
+        
+        if colour[0] in ("rgb", "rgba"):
+            r256 = colour[1]*6//256
+            g256 = colour[2]*6//256
+            b256 = colour[3]*6//256
+            
+            pal256 = 16 + 36*r256 + 6*g256 + b256
+            
+            r8 = colour[1]//128
+            g8 = colour[2]//128
+            b8 = colour[3]//128
+            
+            pal8 = 4*b8 + 2*g8 + r8
+            
+            if pal8 == 0 and sum(colour[1:4] >= 192):
+                pal16 = 8
+            elif pal8 == 7:
+                r16 = (colour[1] - 128)//64
+                g16 = (colour[2] - 128)//64
+                b16 = (colour[3] - 128)//64
+                
+                pal16 = 8 + 4*b16 + 2*g16 + r16
+                
+                if pal16 == 8:
+                    pal16 = 7
+            else:
+                pal16 = pal8
+            
+            return [pal256, pal16, pal8]
+        
+        if colour[0] in (None, "grey"):
+            return tuple(3*[1000*colour[1]//256])
+        
+        if colour[0] == "pal":
+            return [colour[1]]
     
     
     def _init_field(self, resolution=None):

@@ -139,12 +139,12 @@ class GraphicsView(mvc.View):
         else:
             try:
                 c0 = colours[0]
-            except KeyError:
+            except (KeyError, IndexError):
                 c0 = None
             
             try:
                 c1 = colours[1]
-            except KeyError:
+            except (KeyError, IndexError):
                 c1 = None
             
             self._colours = [self._rgb_col(c0, COLOURS[0]),
@@ -294,8 +294,8 @@ class GraphicsView(mvc.View):
         if colour[0] in (None, "grey"):
             return tuple(3*colour[1:2])
         
-        if colour[0] == "pal":
-            return (255*bool(colour[1]),
+        if colour[0] == "pal":              # 0 -> Black; else -> White
+            return (255*bool(colour[1]),    # TO-DO: Add proper palette
                     255*bool(colour[1]),
                     255*bool(colour[1]))
 
