@@ -1,0 +1,174 @@
+#display-box {
+    display: none;
+    
+    position: fixed;
+    
+    z-index: 1;
+    
+    font-size: 1.8rem;
+    
+    text-align: center;
+    
+    border: solid 3px light-dark(#484050, #908088);
+    border-radius: 15px;
+    
+    background-color: light-dark(#d0c0c8,   #080010);
+    background-color: light-dark(#d0c0c8e0, #080010e0);
+    
+    user-drag: none;
+    -webkit-user-drag: none;
+    
+    width:  calc(min(120vh, 90vw));
+    height: 90vh;
+    
+    top:  5vh;
+    left: calc(50vw - min(60vh, 45vw));
+}
+
+#display-inner {
+    margin: auto;
+    
+    position: relative;
+    
+    height: calc(100% -  20px);
+    width:  calc(100% - 120px);
+    
+    top: 10px;
+    
+    /*overflow: auto;*/
+}
+
+#display-image {
+    display: block;
+    
+    position: absolute;
+    
+    top:  50%;
+    left: 50%;
+    
+    transform: translateX(-50%) translateY(-50%);
+    
+    max-width:  90%;
+    max-height: 70%;
+    
+    margin: auto;
+}
+
+#display-title {
+    position: absolute;
+    
+    top: 0px;
+    
+    width: 100%;
+    
+    font-size: 1.8rem;
+}
+
+#display-text {
+    position: absolute;
+    
+    top: calc(85% + 1em);
+    
+    width: 100%;
+    
+    max-height: 10%;
+    
+    font-size: 1rem;
+    
+    overflow: auto;
+}
+
+
+.display-button {
+    position: absolute;
+    
+    border: 2px solid light-dark(#908088, #484050);
+    border-radius: 10px;
+    
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    
+    cursor: pointer;
+}
+
+.display-button:hover {
+    background-color: light-dark(#686070, #706068);
+}
+
+.button-text {
+    position: absolute;
+    
+    width: 100%;
+    
+    text-align: center;
+    
+    bottom: 40vh;
+    left:    0px;
+}
+
+#display-close {
+    right: 2px;
+    top:   2px;
+    
+    width:  50px;
+    height: 50px;
+}
+
+#display-close:hover {
+    background-color: light-dark(#902c4a, #a03050);
+}
+
+#display-close .button-text {
+    bottom: 0px;
+}
+
+#display-left {
+    left:   2px;
+    top:    2px;
+    bottom: 2px;
+    
+    width:  40px;
+}
+
+#display-right {
+    right:  2px;
+    top:   58px;
+    bottom: 2px;
+    
+    width:  40px;
+}
+
+@media (orientation:portrait) {
+    #display-box {
+        width:  90vw;
+        height: calc(min(120vw, 90vh));
+        
+        top:  calc(50vh - min(60vw, 45vh));
+        left: 5vw;
+    }
+    
+    #display-inner {
+        width: calc(100% - 170px);
+    }
+    
+    #display-close {
+        width:  75px;
+        height: 75px;
+    }
+    
+    #display-left {
+        top:    2px;
+        bottom: 2px;
+        
+        width:  60px;
+    }
+    
+    #display-right {
+        top:   83px;
+        bottom: 2px;
+        
+        width:  60px;
+    }
+}

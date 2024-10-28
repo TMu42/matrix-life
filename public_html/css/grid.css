@@ -1,0 +1,63 @@
+div.page-grid {
+    display: grid;
+    
+    text-align: center;
+    
+    font-size: 1.2rem;
+    
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    
+    gap: 2%;
+    
+    cursor: default;
+    
+    user-drag: none;
+    -webkit-user-drag: none;
+    
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+@media (orientation:portrait) {
+    div.page-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+div.inner-box {
+    display: block;
+    
+    margin: auto;
+    
+    margin-top:    5%;
+    margin-bottom: 5%;
+    
+    padding-top:    5%;
+    
+    width:  90%;
+    
+    cursor: pointer;
+    
+    border: solid 2px light-dark(#484050, #908088);
+}
+
+div.inner-box:hover {
+    margin-top:    0%;
+    margin-bottom: 0%;
+    
+    width:  100%;
+}
+
+img.grid-image {
+    user-drag: none;
+    -webkit-user-drag: none;
+    
+    max-width:  90%;
+    max-height: 90%;
+}
+
+span.grid-display-text {
+    display: none;
+}
