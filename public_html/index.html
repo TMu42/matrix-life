@@ -1,96 +1,224 @@
-# Matrix Life (matrix-life)
-Conway's Game of Life using Matrices implemented in Python.
+<!DOCTYPE html>
 
-## Summary
-
-This repository implements a [Linear Algebra](https://en.wikipedia.org/wiki/Linear_algebra) model of the classic [Cellular Automaton](https://en.wikipedia.org/wiki/Cellular_automaton) [John Conway](https://en.wikipedia.org/wiki/John_Horton_Conway)'s [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in Python, using a variant of the [Model-View-Controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) design pattern. Different Model classes are provided to implement the algorithm using various [Linear Algebra](https://en.wikipedia.org/wiki/Linear_algebra) functions from NumPy and SciPy. View-Controller class pairs are provided to output either to the terminal (with curses) or to a graphical interface (with PyGame). These can be selected from the command line via options/arguments to the `main.py` script or alternatively the modules can be imported and assembled interactively from the python interpreter.
-
-## Files
-### matrix-life/
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     
-    main.py             -    Main python script to execute versions of Conway's Game of Life. 
-                             Invoke with:
-                             
-                                 python main.py [OPTIONS]
-                             
-                             Options:
-                                 -A, --algorithm=ALGORITHM
-                                         Select the algorithm for executing Conway's Game of
-                                         Life. ALGORITHM may be any of: "numpy-roll",
-                                         "numpy-matmul", "scipy-matmul" or "scipy-convolve",
-                                         or accepted aliases/abbreviations for these.
-                                 
-                                 -d, --delay=NUMBER
-                                         Set the delay interval between iterations, 0 for no
-                                         delay. NUMBER is in seconds but may take floating
-                                         point values.
-                                 
-                                 -F, --fullscreen
-                                         In graphical mode, set display to fullscreen.
-
-                                 -O, --outmode=OUTMODE
-                                         Select the output mode. OUTMODE may be either
-                                         "terminal" or "graphical", or accepted aliases/
-                                         abbreviations for these.
-
-                                 -p, --paused
-                                         Start Conway's Game of Life in paused mode. To
-                                         toggle pause during execution, tap 'p' or SPACE.
-
-                                 -q, --quiet (Ignored)
-                                         Decrease the verbosity of accompanying information
-                                         to output for each instance of flag.
-
-                                 -r, --resolution WIDTH [HEIGHT]
-                                         Enter the display resolution for the output, if
-                                         only WIDTH is specified, HEIGHT = WIDTH.
-
-                                 -s, --size WIDTH [HEIGHT]
-                                         Enter the size of the matrix to initialize for
-                                         Conway's Game of Life. If only WIDTH is specified,
-                                         HEIGHT = WIDTH.
-
-                                 -v, --verbose (Ignored)
-                                         Increase the verbosity of accompanying information
-                                         to output for each instance of flag.
+    <title>TMu42 - Matrix Life</title>
     
-    arguments.py    -    CLI argument handling with argparse
+    <link rel="stylesheet" href="/css/main.css?r=75" />
+    <link rel="stylesheet" href="/css/menu.css?r=75" />
+    <link rel="stylesheet" href="/css/grid.css?r=75" />
+    <link rel="stylesheet" href="/css/display.css?r=75" />
     
-    icon.ico            -    Favicon style icon file for graphics mode window.
+    <link rel="icon" href="/favicon.ico" type="image/png" id="favicon-link" />
     
-    requirements.txt    -    Dependency list for this repository, install into virtual environment
-                             or globally with:
-                             
-                                 pip install -r requirements.txt
+    <script src="/script/main.js?r=75"  type="text/javascript"></script>
+    <script src="/script/theme.js?r=75" type="text/javascript" defer="defer">
+    </script>
+    <script src="/script/menu.js?r=75"  type="text/javascript" defer="defer">
+    </script>
+    <script src="/script/grid.js?r=75"  type="text/javascript" defer="defer">
+    </script>
+  </head>
+  
+  <body id="body">
+    <h1>
+      <img alt="&mu;" src="/images/matrix-life.png" class="title-image" id="title-image0"
+           draggable="false" />
+      
+      Matrix Life
+      
+      <img alt="&mu;" src="/images/matrix-life.png" class="title-image" id="title-image1"
+           draggable="false" />
+    </h1>
     
-    README.md           -    This README file
-
-    LICENSE             -    Statement of copyright
-
-### matrix-life/life/
+    <div id="menu-bar">
+      <table id="menu-bar-table">
+        <tr>
+          <td class="menu-bar menu-square" id="usr" title="TMu42@GitHub">
+            &#x269b;&#xFE0E;
+          </td>
+          
+          <td class="menu-bar menu-square" id="home" title="Home">
+            &#x2302;&#xFE0E;
+          </td>
+          
+          <td class="menu-bar " id="featured" title="Featured">
+            Featured
+          </td>
+          
+          <td class="menu-bar " id="active" title="Active">
+            Active
+          </td>
+          
+          <td class="menu-bar " id="future" title="Future">
+            Future
+          </td>
+          
+          <!--
+          <td class="menu-bar " id= title="Nothing">
+            Coming Soon...
+          </td>
+          -->
+          
+          <td class="menu-bar menu-square" id="hamburger" title="Menu">
+            &#x2630;&#xFE0E;
+          </td>
+        </tr>
+      </table>
+      
+      <!--Drop Down Menu-->
+      <div id="hamburger-drop-menu">
+        <div class="drop-down-outer" id="theme-select">
+          <table class=drop-down-table>
+            <tr>
+              <td>Theme</td>
+              
+              <td>  
+                <span class="big-brace">{</span>
+              </td>
+              
+              <td>
+                <div class="drop-down-inner"
+                     id="light-button" title="Light Theme">
+                  Light
+                </div>
+                
+                <div class="drop-down-inner"
+                     id="dark-button" title="Dark Theme">
+                  Dark
+                </div>
+                
+                <div class="drop-down-inner"
+                     id="auto-button" title="Infer Theme from Environment">
+                  Auto
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <!--
+        <div class="drop-down menu-noop" title="Nothing to see here... yet">
+          Drop Down
+        </div>
+        
+        <div class="drop-down menu-noop" title="Nothing to see here... yet">
+          Menu Options
+        </div>
+        
+        <div class="drop-down menu-noop" title="Nothing to see here... yet">
+          Coming Soon...
+        </div>
+        -->
+      </div>
+      <!--/Drop Down Menu-->  
+    </div>
     
-    __init__.py     -    Initiation file for package life
+    <div id="display-box">
+      <div id="display-close" class="display-button">
+        <span class="button-text">X</span>
+      </div>
+      
+      <div id="display-left" class="display-button">
+        <span class="button-text">&lt;</span>
+      </div>
+      
+      <div id="display-right" class="display-button">
+        <span class="button-text">&gt;</span>
+      </div>
+      
+      <div id="display-inner">
+        <div id="display-title"></div>
+        
+        <img draggable="false" id="display-image" />
+        
+        <div id="display-text"></div>
+      </div>
+    </div>
     
-    graphics.py     -    View and Controller classes for graphical output handling with PyGame
-
-    mvc.py          -    Abstract Base Class descriptions for Model-View-Controller objects
+    <h2>Matrix Life (matrix-life)</h2>
     
-    terminal.py     -    View and Controller classes for terminal output handling with curses
-
-    utils.py        -    Shared general utility functions
-
-### matrix-life/life/nump/
+    <div class="page-content">
+      <p class="page-content">
+        This repository implements a
+        <a href="https://en.wikipedia.org/wiki/Linear_algebra">Linear Algebra
+        </a> model of the classic
+        <a href="https://en.wikipedia.org/wiki/Cellular_automaton">Cellular
+        Automaton</a>
+        <a href="https://en.wikipedia.org/wiki/John_Horton_Conway">John
+        Conway</a>'s
+        <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Game
+        of Life</a> in Python, using a variant of the
+        <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">
+        Model-View-Controller</a> design pattern. Different Model classes are
+        provided to implement the algorithm using various
+        <a href="https://en.wikipedia.org/wiki/Linear_algebra">Linear Algebra
+        </a> functions from NumPy and SciPy. View-Controller class pairs are
+        provided to output either to the terminal (with curses) or to a
+        graphical interface (with PyGame). These can be selected from the
+        command line via options/arguments to the `main.py` script or
+        alternatively the modules can be imported and assembled interactively
+        from the python interpreter.
+      </p>
+    </div>
     
-    __init__.py    -    Initiation file for subpackage nump
-    
-    roll.py        -    Model class for Game of Life implementation with numpy.roll()
-    
-    matmul.py      -    Model class for Game of Life implementation with numpy.ndarray.__matmul__()
-
-### matrix-life/life/scip/
-    
-    __init__.py    -    Initiation file for subpackage scip
-    
-    convolve.py    -    Model class for Game of Life implementation with scipy.ndimage.convolve()
-    
-    matmul.py      -    Model class for Game of Life implementation with scipy.sparse.__matmul__()
+    <div class="inverse" id="footer">
+      <p class="inverse">
+        We would like to acknowledge the Awabakal, Jagera and Turrbal peoples
+        upon whose traditional ancestral lands this website and its content
+        have been developed. We wish also to pay respect to the Elders and
+        community leaders of these nations and to extend that respect to all
+        traditional custodians, ancestors and living members of these
+        communities.
+      </p>
+      
+      <p class="inverse">
+        In the interest of minimising cultural harm and furthering
+        reconciliation in the wake of past attrocities and wrongdoing, we
+        would like to invite the correspondence and consultation of any
+        indigenous representatives who have advice or concerns regarding our
+        work or publication.
+      </p>
+      
+      <p class="inverse">
+        We celebrate diversity of all kinds and hope to foster a culture of
+        mutual respect between all peoples. In this interest, we make every
+        effort to engage in inclusive and culturally safe publication
+        practices. We acknowledge however that we may sometimes make mistakes
+        and hope to rectify any such mistakes before they cause harm or
+        offence. If you have any concerns, we welcome your feedback and aim to
+        take a precautionary approach to all concerns.
+      </p>
+      
+      <p class="inverse">
+        We acknowledge that the emu is a sacred totem for many individuals,
+        families, clans and First Nations of Australian Aboriginal heritage.
+        Symbolically it may represent a spiritual connection to country or
+        indeed have other significance to these people. We express our deepest
+        respect for these traditional customs and those who practise them. We
+        also acknowledge that the emu is a symbol of national identity for
+        Australians with and without Aboriginal heritage. It appears as the
+        sinister (left) bearer of the Australian Coat of Arms and is regarded
+        by many as the unofficial avian emblem of Australia. It has also
+        appeared on a number of coins and stamps. Through our use of the
+        <a href="/logos#Emu Logo">Emu Logo</a>, we imply no affiliation with
+        any other individual or group which holds this majestic bird as a
+        symbol, emblem, totem or cultural icon.
+      </p>
+      
+      <p class="inverse">
+        The <a href="/logos#Emu Logo">Emu Logo</a> (including each of its
+        colour variants) was designed by TMu42 with inspiration from
+        photographic works licensed under
+        <a href="https://creativecommons.org/">Creative Commons</a>. As a
+        substantially original work, TMu42 retains copyright over this
+        property along with all content of this website and its subpages
+        unless otherwise cited.
+      </p>
+      
+      <p>Copyright &copy;&#xFE0E; 2024 TMu42, All Rights Reserved</p>
+    </div>
+  </body>
+</html>

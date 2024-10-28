@@ -1,0 +1,151 @@
+td.menu-bar {
+    border: 2px solid light-dark(#908088, #484050);
+    
+    cursor: pointer;
+}
+
+td.menu-bar:hover {
+    background-color: light-dark(#686070, #706068);
+}
+
+td.menu-square {
+    width: 50px;
+}
+
+div.drop-down {
+    border: 2px solid light-dark(#908088, #484050);
+    
+    cursor: pointer;
+    
+    margin-bottom: 2px;
+    
+    padding-left:  10px;
+    padding-right: 10px;
+    padding-top:    5px;
+    padding-bottom: 5px;
+}
+
+div.drop-down:hover {
+    background-color: light-dark(#686070, #706068);
+}
+
+div.drop-down-outer {
+    border: 2px solid light-dark(#908088, #484050);
+    
+    cursor: default;
+    
+    margin-bottom: 2px;
+    
+    padding-left:  10px;
+    padding-right:  0px;
+}
+
+div.drop-down-inner {
+    border: 2px solid light-dark(#908088, #484050);
+    
+    cursor: pointer;
+    
+    margin-bottom: 2px;
+    
+    padding-left:  10px;
+    padding-right: 10px;
+    padding-top:    3px;
+    padding-bottom: 3px;
+}
+
+div.drop-down-inner:hover {
+    background-color: light-dark(#686070, #706068);
+}
+
+table.drop-down-table {
+    margin-right: 0px;
+    margin-left:  auto;
+}
+
+span.big-brace {
+    font-size:   3em;
+    font-weight: lighter;
+}
+
+td.menu-noop, div.menu-noop {
+    cursor: not-allowed;
+}
+
+
+#menu-bar {
+    background-color: light-dark(#484050, #908088);
+    
+    position: relative;
+    
+    width:  100%;
+    height: 50px;
+    
+    color: light-dark(#c0b0b8, #181020);
+    
+    font-weight: bold;
+    
+    font-size: 2rem;
+    
+    text-align: center;
+    
+    cursor: default;
+    
+    user-drag: none;
+    -webkit-user-drag: none;
+    
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+#menu-bar-table {
+    width:  100%;
+    height: 100%;
+}
+
+#hamburger-drop-menu {
+    background-color: light-dark(#484050, #908088);
+    
+    color: light-dark(#c0b0b8, #181020);
+    
+    font-weight: bold;
+    
+    font-size: 1.6rem;
+    
+    text-align: center;
+    
+    display: none;
+    
+    position: absolute;
+    
+    right: 0%;
+    
+    padding-left:  2px;
+    padding-right: 2px;
+    
+    cursor: default;
+    
+    user-drag: none;
+    -webkit-user-drag: none;
+    
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+@media (orientation:portrait) {
+    table.drop-down-table {
+        margin-right: 5%;
+    }
+    
+    #menu-bar {
+        height: 75px;
+    }
+    
+    #hamburger-drop-menu {
+        left: 0%;
+    }
+}
+

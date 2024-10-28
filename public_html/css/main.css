@@ -1,0 +1,172 @@
+:root {
+    color-scheme: light dark;
+}
+
+body {
+    background-color: light-dark(#c0b0b8, #181020);
+    
+    color: light-dark(#181020, #c0b0b8);
+    
+    font-family: sans-serif;
+    
+    margin-left:  15%;
+    margin-right: 15%;
+    
+    min-width: 500px;
+}
+
+h1 {
+    color: light-dark(#484050, #908088);
+    
+    text-align: center;
+    
+    font-size: 4rem;
+    
+    font-family: cursive;
+    
+    cursor: default;
+    
+    user-drag: none;
+    -webkit-user-drag: none;
+    
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+img.title-image {
+    height: 50px;
+    width:  50px;
+    
+    user-drag: none;
+    -webkit-user-drag: none;
+}
+
+h2 {
+    color: light-dark(#484050, #908088);
+    
+    text-align: left;
+    
+    font-size: 1.8rem;
+    
+    font-family: sans-serif;
+    
+    border-bottom: 2px solid light-dark(#484050, #908088);
+}
+
+p.page-content {
+    text-indent: 40px;
+}
+
+ul.page-content {
+}
+
+div.page-content {
+    line-height: 1.6;
+    
+    margin-top:    40px;
+    margin-bottom: 60px;
+    
+    margin-left:  5%;
+    margin-right: 5%;
+}
+
+@media (orientation:portrait) {
+    :root {
+        font-size: 1.5em;
+    }
+    
+    body {    
+        margin-left:  0%;
+        margin-right: 0%;
+    }
+    
+    img.title-image {
+        height: 70px;
+        width:  70px;
+    }
+    
+    h2 {
+        padding-left: 5%;
+    }
+    
+    div.page-content {
+        margin-left:  10%;
+        margin-right: 10%;
+    }
+}
+
+a {
+    text-decoration: none;
+    
+    font-weight: bold;
+}
+
+a:link {
+    color: light-dark(#000000, #ffffff);
+}
+
+a:visited {
+    color: light-dark(#402020, #804040);
+}
+
+a:hover {
+    color: light-dark(#303030, #a0a0a0);
+    
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: none;
+}
+
+
+.inverse a {
+    font-weight: bold;
+    
+    text-decoration: none;
+}
+
+.inverse a:link {
+    color: light-dark(#ffffff, #000000);
+}
+
+.inverse a:visited {
+    color: light-dark(#b04040, #501010);
+}
+
+.inverse a:hover {
+    color: light-dark(#d0d0d0, #101010);
+    
+    text-decoration: underline;
+}
+
+.inverse a:active {
+    text-decoration: none;
+}
+
+
+#footer {
+    background-color: light-dark(#484050, #908088);
+    
+    color: light-dark(#c0b0b8, #181020);
+    
+    font-size: 0.8rem;
+    
+    font-weight: normal;
+    
+    max-width: 100%;
+    
+    padding-left:   50px;
+    padding-right:  50px;
+    padding-top:    20px;
+    padding-bottom: 20px;
+    
+    cursor: default;
+    
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
